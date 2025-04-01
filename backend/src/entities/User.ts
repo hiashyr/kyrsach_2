@@ -1,12 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from "typeorm";
+import bcrypt from "bcrypt";
 
 @Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number; // Добавляем "!" чтобы указать, что свойство будет инициализировано TypeORM
+  id!: number;
 
   @Column({ type: "varchar", length: 100, unique: true })
-  email!: string; // То же самое для остальных полей
+  email!: string;
 
   @Column({ type: "varchar", length: 255 })
   password_hash!: string;
@@ -14,23 +15,29 @@ export class User {
   @Column({ type: "varchar", length: 20, default: "user" })
   role!: string;
 
-  @Column({ type: "boolean", default: false })
-  is_blocked!: boolean;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 
   @UpdateDateColumn({ name: "edited_at" })
   updatedAt!: Date;
 
-  // Либо можно добавить конструктор:
-  constructor() {
-    this.id = 0;
-    this.email = "";
-    this.password_hash = "";
-    this.role = "user";
-    this.is_blocked = false;
-    this.createdAt = new Date();
-    this.updatedAt = new Date();
+  @Column({ type: "varchar", length: 255, nullable: true, default: null})
+  avatar_url!: string | null;
+
+  // Автоматическое хеширование пароля перед сохранением
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password_hash) {
+      this.password_hash = await bcrypt.hash(this.password_hash, 10);
+    }
   }
+
+  // Метод для проверки пароля
+  async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password_hash);
+  }
+
+  // Конструктор можно удалить, так как декораторы TypeORM
+  // автоматически инициализируют значения по умолчанию
 }

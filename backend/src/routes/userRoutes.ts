@@ -1,8 +1,20 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/userController";
+import { 
+  register, 
+  login, 
+  getCurrentUser, 
+  getUsers 
+} from "../controllers/userController";
+import authMiddleware from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.get("/", getUsers); // GET /api/users
+// Публичные роуты
+router.post("/register", register);
+router.post("/login", login);
+
+// Защищенные роуты
+router.get("/me", authMiddleware, getCurrentUser);
+router.get("/", authMiddleware, getUsers);
 
 export default router;
