@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
+import { PasswordResetToken } from "./PasswordResetTokens"; // Не забудьте добавить этот импорт
 
 @Entity("users")
 export class User {
@@ -21,8 +22,12 @@ export class User {
   @UpdateDateColumn({ name: "edited_at" })
   updatedAt!: Date;
 
-  @Column({ type: "varchar", length: 255, nullable: true, default: null})
+  @Column({ type: "varchar", length: 255, nullable: true, default: null })
   avatar_url!: string | null;
+
+  // Добавляем связь с токенами сброса пароля
+  @OneToMany(() => PasswordResetToken, (token) => token.user)
+  resetTokens!: PasswordResetToken[];
 
   // Автоматическое хеширование пароля перед сохранением
   @BeforeInsert()
@@ -37,7 +42,4 @@ export class User {
   async comparePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password_hash);
   }
-
-  // Конструктор можно удалить, так как декораторы TypeORM
-  // автоматически инициализируют значения по умолчанию
 }

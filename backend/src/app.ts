@@ -3,6 +3,7 @@ import express from "express";
 import { AppDataSource } from "./config/data-source";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
+import authRoutes from "./routes/authRoutes";
 
 const app = express();
 const PORT = 5000;
@@ -13,14 +14,23 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+// Middleware
 app.use(cors({ 
   origin: "http://localhost:3000",
-  credentials: true // Для работы с cookie/session при необходимости
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 app.use(express.json());
 
-// Подключаем роуты
+// Логирование входящих запросов (для отладки)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// Подключение роутов
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {
@@ -28,15 +38,24 @@ app.get("/", (req, res) => {
     status: "OK",
     message: "Backend работает!",
     endpoints: {
-      users: "/api/users"
+      users: "/api/users",
+      auth: "/api/auth",
+      forgot_password: "POST /api/auth/forgot-password"
     },
     timestamp: new Date().toISOString()
   });
 });
 
-// Обработка 404
+// Обработчик 404 (должен быть ПОСЛЕДНИМ)
 app.use((req, res) => {
-  res.status(404).json({ error: "Endpoint не найден" });
+  console.error(`⚠️ 404 Not Found: ${req.method} ${req.path}`);
+  res.status(404).json({ 
+    error: "Endpoint не найден",
+    available_endpoints: {
+      users: "/api/users",
+      auth: "/api/auth"
+    }
+  });
 });
 
 // Инициализация БД и сервера
@@ -45,7 +64,11 @@ AppDataSource.initialize()
     console.log("✅ Database connected");
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
-      console.log(`🔑 JWT секрет: ${process.env.JWT_SECRET ? "установлен" : "отсутствует"}`);
+      console.log("🔑 JWT секрет:", process.env.JWT_SECRET ? "установлен" : "отсутствует");
+      console.log("🛣️ Доступные эндпоинты:");
+      console.log("  - POST /api/auth/forgot-password");
+      console.log("  - POST /api/users/register");
+      console.log("  - POST /api/users/login");
     });
   })
   .catch((err) => {
