@@ -18,10 +18,6 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendPasswordResetEmail = async (email: string, token: string): Promise<void> => {
-  if (!process.env.FRONTEND_URL) {
-    throw new Error('FRONTEND_URL not configured');
-  }
-
   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
@@ -33,11 +29,18 @@ export const sendPasswordResetEmail = async (email: string, token: string): Prom
         <h2 style="color: #330570;">Восстановление пароля</h2>
         <p>Для сброса пароля перейдите по ссылке:</p>
         <a href="${resetLink}" 
-           style="display: inline-block; padding: 10px 20px; background-color: #330570; color: white; text-decoration: none; border-radius: 5px;">
+           style="display: inline-block; padding: 10px 20px; 
+                  background-color: #330570; color: white; 
+                  text-decoration: none; border-radius: 5px;">
           Сбросить пароль
         </a>
         <p style="margin-top: 20px; color: #666;">
-          Ссылка действительна 1 час. Если вы не запрашивали сброс пароля, проигнорируйте это письмо.
+          Ссылка действительна 1 час. Если вы не запрашивали сброс пароля, 
+          проигнорируйте это письмо.
+        </p>
+        <p style="color: #666;">
+          Если кнопка не работает, скопируйте эту ссылку в браузер:<br>
+          <span style="word-break: break-all;">${resetLink}</span>
         </p>
       </div>
     `,
