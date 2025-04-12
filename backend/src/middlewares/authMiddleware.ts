@@ -18,7 +18,8 @@ export default async function authMiddleware(
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
     const user = await AppDataSource.getRepository(User).findOne({ 
-      where: { id: decoded.id } 
+      where: { id: decoded.id },
+      select: ['id', 'email', 'role'] // Важно: выбираем роль
     });
 
     if (!user) {

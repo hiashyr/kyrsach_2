@@ -151,34 +151,24 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.user) {
-      res.status(401).json({ 
-        error: "UNAUTHORIZED",
-        message: "Требуется авторизация" 
-      });
-      return;
+      res.status(401).json({ error: "UNAUTHORIZED" });
+      return; // Явный return вместо отправки Response
     }
-    
-    // Обновляем данные пользователя из БД
-    const currentUser = await userRepository.findOne({ 
+
+    const user = await userRepository.findOne({
       where: { id: req.user.id },
-      select: ['id', 'email', 'role', 'avatar_url', 'createdAt']
+      select: ['id', 'email', 'role', 'avatar_url']
     });
 
-    if (!currentUser) {
-      res.status(404).json({ 
-        error: "USER_NOT_FOUND",
-        message: "Пользователь не найден" 
-      });
+    if (!user) {
+      res.status(404).json({ error: "USER_NOT_FOUND" });
       return;
     }
 
-    res.json({ user: currentUser });
+    res.json(user); // Корректный возврат Response
   } catch (error) {
-    console.error("Get current user error:", error);
-    res.status(500).json({ 
-      error: "SERVER_ERROR",
-      message: "Ошибка сервера" 
-    });
+    console.error("Get user error:", error);
+    res.status(500).json({ error: "SERVER_ERROR" });
   }
 };
 
@@ -203,6 +193,27 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       error: "SERVER_ERROR",
       message: "Ошибка сервера" 
     });
+  }
+};
+
+export const getAdminStats = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (req.user?.role !== 'admin') {
+      res.status(403).json({ error: "FORBIDDEN" });
+      return;
+    }
+
+    const usersCount = await userRepository.count();
+    const questionsCount = 0; // Замените на реальный запрос
+    
+    res.json({
+      usersCount,
+      questionsCount,
+      testsCompleted: 0
+    });
+  } catch (error) {
+    console.error("Admin stats error:", error);
+    res.status(500).json({ error: "SERVER_ERROR" });
   }
 };
 

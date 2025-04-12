@@ -3,7 +3,8 @@ import {
   register, 
   login, 
   getCurrentUser, 
-  getUsers 
+  getUsers,
+  getAdminStats // Добавьте новый метод
 } from "../controllers/userController";
 import authMiddleware from "../middlewares/authMiddleware";
 
@@ -16,5 +17,6 @@ router.post("/login", login);
 // Защищенные роуты
 router.get("/me", authMiddleware, getCurrentUser);
 router.get("/", authMiddleware, getUsers);
+router.get("/admin-stats", authMiddleware, getAdminStats); // Новый эндпоинт
 
 export default router;
