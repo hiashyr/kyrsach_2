@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
 import { PasswordResetToken } from "./PasswordResetTokens"; // Не забудьте добавить этот импорт
+import { EmailVerificationToken } from "./EmailVerificationToken";
 
 @Entity("users")
 export class User {
@@ -25,6 +26,9 @@ export class User {
   @Column({ type: "varchar", length: 255, nullable: true, default: null })
   avatar_url!: string | null;
 
+  @Column({ name: "is_verified", default: false })
+  isVerified!: boolean;
+
   // Добавляем связь с токенами сброса пароля
   @OneToMany(() => PasswordResetToken, (token) => token.user)
   resetTokens!: PasswordResetToken[];
@@ -42,4 +46,7 @@ export class User {
   async comparePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password_hash);
   }
+
+  @OneToMany(() => EmailVerificationToken, (token) => token.user)
+  emailVerificationTokens!: EmailVerificationToken[];
 }
