@@ -1,0 +1,18 @@
+{"expiresAt":"2025-04-26T11:05:34.850Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:05:34","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80","userId":20}
+{"level":"info","message":"Email sent to 7fu9suxud9@zudpck.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:05:36"}
+{"level":"info","message":"Email verified for user: 7fu9suxud9@zudpck.com","timestamp":"2025-04-25 14:06:37","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80","userId":20}
+{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:06:37","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
+{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:07:04","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
+{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:07:04","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
+{"expiresAt":"2025-04-26T11:15:59.030Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:15:59","token":"09f8e9f776a464e682892e5eee4e5402e828fb9c0da9ca3cc496fcbde097d714","userId":21}
+{"level":"info","message":"Email sent to uy97sew6pv@zvvzuv.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:16:02"}
+{"expiresAt":"2025-04-26T11:23:01.219Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:23:01","token":"47b3c990e448c6eca9835ef25aca66ffe0825542b26cf7fd415ffcd63f6f3b76","userId":22}
+{"level":"info","message":"Email sent to yubltdaeur@smykwb.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:23:02"}
+{"expiresAt":"2025-04-26T11:36:36.684Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:36:36","token":"9b09dd2d664924bc9c06afb1fcef7ceba15fb4f0b61417a0449233bd2c565656","userId":23}
+{"level":"info","message":"Email sent to 4joqy6h5iu@wyoxafp.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:36:39"}
+{"expiresAt":"2025-04-26T11:44:34.039Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:44:34","token":"ad571a9c423056f0ea89350083178bd299e7ca36dbec8dc773d3a4f7bae540ec","userId":24}
+{"level":"info","message":"Email sent to mta2pcn51i@wywnxa.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:44:37"}
+{"level":"info","message":"Email sent to mta2pcn51i@wywnxa.com","subject":"Восстановление пароля","timestamp":"2025-04-25 16:33:59"}
+{"expiresAt":"2025-04-26T13:42:08.354Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 16:42:08","token":"c501862f222f4cbc9977e491fd80a55a197d2db51ea7af83756a2e587fb653fa","userId":25}
+{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 16:42:10"}
+{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Восстановление пароля","timestamp":"2025-04-25 16:46:27"}

@@ -93,7 +93,7 @@ export const sendVerificationEmail = async (email: string, token: string): Promi
   }
 
   const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${encodeURIComponent(token)}`;
-
+  console.log('Sending verification link:', verificationLink);
   await sendEmail({
     to: email,
     subject: 'Подтверждение email для ПДД Тренажёра',

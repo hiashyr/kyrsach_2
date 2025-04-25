@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/data-source";
 import { User } from "../entities/User";
-import { validate } from "class-validator";
 import { plainToClass } from "class-transformer";
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, validate } from 'class-validator';
 import { sendVerificationEmail } from '../services/emailService';
 import crypto from 'crypto';
 import { EmailVerificationToken } from '../entities/EmailVerificationToken';
+import logger from '../config/logger';
 
-// Добавьте эти классы сразу после импортов:
 class RegisterDto {
   @IsEmail({}, { message: 'Некорректный email' })
   email!: string;
@@ -28,6 +27,7 @@ class LoginDto {
 }
 
 const userRepository = AppDataSource.getRepository(User);
+const tokenRepository = AppDataSource.getRepository(EmailVerificationToken);
 
 declare global {
   namespace Express {
@@ -56,32 +56,49 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const { email, password } = registerDto;
 
-    const existingUser = await userRepository.findOne({ where: { email } });
+    const existingUser = await userRepository.findOne({ 
+      where: { email },
+      relations: ['emailVerificationTokens']
+    });
+
     if (existingUser) {
-      res.status(400).json({ 
-        error: "EMAIL_EXISTS",
-        message: "Email уже используется",
-        field: "email"
-      });
-      return;
+      // Если пользователь не подтвердил email, разрешаем повторную регистрацию
+      if (!existingUser.isVerified) {
+        await tokenRepository.delete({ 
+          user: { id: existingUser.id } 
+        });
+        await userRepository.delete(existingUser.id);
+      } else {
+        res.status(400).json({ 
+          error: "EMAIL_EXISTS",
+          message: "Email уже используется",
+          field: "email"
+        });
+        return;
+      }
     }
 
     const user = new User();
     user.email = email;
     user.password_hash = password;
-    user.isVerified = false; // Явно указываем, что email не подтверждён
+    user.isVerified = false;
 
     await userRepository.save(user);
 
-    // Генерируем токен подтверждения
     const token = crypto.randomBytes(32).toString('hex');
     const verificationToken = new EmailVerificationToken();
     verificationToken.token = token;
     verificationToken.user = user;
     verificationToken.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    await AppDataSource.getRepository(EmailVerificationToken).save(verificationToken);
+    
+    await tokenRepository.save(verificationToken);
+    
+    logger.info('Verification token created', {
+      userId: user.id,
+      token,
+      expiresAt: verificationToken.expiresAt
+    });
 
-    // Отправляем письмо
     await sendVerificationEmail(user.email, token);
 
     res.status(201).json({ 
@@ -91,7 +108,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
 
   } catch (error) {
-    console.error("Registration error:", error);
+    logger.error("Registration error:", error);
     res.status(500).json({ 
       error: "SERVER_ERROR",
       message: "Ошибка при регистрации" 
@@ -101,26 +118,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const loginDto = plainToClass(LoginDto, req.body);
-    const errors = await validate(loginDto);
+    const { email, password } = req.body;
 
-    if (errors.length > 0) {
-      res.status(400).json({
-        error: "VALIDATION_ERROR",
-        message: "Ошибка валидации",
-        details: errors.map(err => ({
-          field: err.property,
-          constraints: err.constraints
-        }))
-      });
-      return;
-    }
+    // 1. Находим пользователя с email verification tokens
+    const user = await userRepository.findOne({ 
+      where: { email },
+      relations: ['emailVerificationTokens'],
+      select: ['id', 'email', 'password_hash', 'isVerified', 'role']
+    });
 
-    const { email, password } = loginDto;
-
-    const user = await userRepository.findOne({ where: { email } });
     if (!user) {
-      res.status(401).json({ 
+      res.status(401).json({
         error: "INVALID_CREDENTIALS",
         message: "Неверный email или пароль",
         field: "email"
@@ -128,19 +136,26 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Проверяем, подтверждён ли email
+    // 2. Проверка подтверждения email
     if (!user.isVerified) {
+      const hasActiveToken = user.emailVerificationTokens?.some(
+        t => t.expiresAt > new Date()
+      );
+      
       res.status(403).json({
         error: "EMAIL_NOT_VERIFIED",
-        message: "Email не подтверждён. Проверьте вашу почту.",
-        email: user.email
+        message: hasActiveToken 
+          ? "Подтвердите email, письмо отправлено"
+          : "Ссылка истекла. Запросите новое письмо",
+        canResend: true
       });
       return;
     }
 
+    // 3. Сравнение пароля
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      res.status(401).json({ 
+      res.status(401).json({
         error: "INVALID_CREDENTIALS",
         message: "Неверный email или пароль",
         field: "password"
@@ -148,6 +163,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // 4. Генерация JWT токена
     const token = generateToken(user);
     
     res.json({
@@ -156,39 +172,46 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
-        isVerified: user.isVerified
-      },
-      redirectTo: user.role === 'admin' ? '/admin/dashboard' : '/'
+        role: user.role
+      }
     });
+
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ 
+    logger.error("Login error:", error);
+    res.status(500).json({
       error: "SERVER_ERROR",
-      message: "Ошибка при авторизации" 
+      message: "Ошибка при авторизации"
     });
   }
 };
 
-// userController.ts
 export const resendVerificationEmail = async (req: Request, res: Response): Promise<void> => {
   const { email } = req.body;
 
   try {
-    const user = await userRepository.findOne({ where: { email } });
+    const user = await userRepository.findOne({ 
+      where: { email },
+      relations: ['emailVerificationTokens']
+    });
+
     if (!user) {
-      res.status(404).json({ error: "USER_NOT_FOUND" });
+      res.status(404).json({ 
+        error: "USER_NOT_FOUND",
+        message: "Пользователь не найден"
+      });
       return;
     }
 
     if (user.isVerified) {
-      res.status(400).json({ error: "EMAIL_ALREADY_VERIFIED" });
+      res.status(400).json({ 
+        error: "EMAIL_ALREADY_VERIFIED",
+        message: "Email уже подтверждён"
+      });
       return;
     }
 
-    // Удаляем старые токены
-    await AppDataSource.getRepository(EmailVerificationToken)
-      .delete({ user: { id: user.id } });
+    // Удаляем все старые токены
+    await tokenRepository.delete({ user: { id: user.id } });
 
     // Создаём новый токен
     const token = crypto.randomBytes(32).toString('hex');
@@ -196,15 +219,27 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
     verificationToken.token = token;
     verificationToken.user = user;
     verificationToken.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    await AppDataSource.getRepository(EmailVerificationToken).save(verificationToken);
+    
+    await tokenRepository.save(verificationToken);
+    logger.info('New verification token created', {
+      userId: user.id,
+      token,
+      expiresAt: verificationToken.expiresAt
+    });
 
-    // Отправляем письмо
     await sendVerificationEmail(user.email, token);
 
-    res.json({ success: true, message: "Письмо отправлено повторно" });
+    res.json({ 
+      success: true, 
+      message: "Письмо отправлено повторно",
+      expiresAt: verificationToken.expiresAt
+    });
   } catch (error) {
-    console.error("Resend error:", error);
-    res.status(500).json({ error: "SERVER_ERROR" });
+    logger.error("Resend verification error:", error);
+    res.status(500).json({ 
+      error: "SERVER_ERROR",
+      message: "Ошибка при отправке письма" 
+    });
   }
 };
 
@@ -277,7 +312,12 @@ export const getAdminStats = async (req: Request, res: Response): Promise<void> 
   }
 };
 
+
 function generateToken(user: User): string {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET не установлен");
+  }
+
   return jwt.sign(
     { 
       id: user.id, 
@@ -285,7 +325,7 @@ function generateToken(user: User): string {
       role: user.role,
       isVerified: user.isVerified
     },
-    process.env.JWT_SECRET!,
+    process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );
 }

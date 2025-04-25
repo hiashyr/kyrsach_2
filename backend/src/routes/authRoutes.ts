@@ -17,7 +17,11 @@ router.post('/reset-password', (req, res, next) => {
   resetPassword(req, res).catch(next);
 });
 
-router.get('/verify-email/:token', (req, res, next) => {
+router.get('/verify-email', (req, res, next) => {
+  verifyEmail(req, res).catch(next);
+});
+
+router.post('/verify-email', (req, res, next) => {
   verifyEmail(req, res).catch(next);
 });
 

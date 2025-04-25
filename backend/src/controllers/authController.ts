@@ -6,6 +6,7 @@ import { EmailVerificationToken } from '../entities/EmailVerificationToken';
 import { PasswordResetToken } from "../entities/PasswordResetTokens";
 import { sendPasswordResetEmail } from "../services/emailService"
 import crypto from 'crypto';
+import logger from '../config/logger'; // Убедитесь, что путь правильный
 
 const userRepository = AppDataSource.getRepository(User);
 const resetTokenRepository = AppDataSource.getRepository(PasswordResetToken);
@@ -107,32 +108,60 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
 };
 
 export const verifyEmail = async (req: Request, res: Response) => {
-  const { token } = req.params;
+  const token = req.query.token || req.body.token;
+
+  if (!token || typeof token !== 'string') {
+    return res.status(400).json({ 
+      success: false,
+      error: "Токен обязателен" 
+    });
+  }
 
   try {
     const tokenRepository = AppDataSource.getRepository(EmailVerificationToken);
     const userRepository = AppDataSource.getRepository(User);
 
-    // Находим токен
-    const verificationToken = await tokenRepository.findOne({
-      where: { token },
-      relations: ["user"],
-    });
+    // 1. Находим пользователя по токену (даже если токен удалён)
+    const userWithToken = await userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.emailVerificationTokens", "token")
+      .where("token.token = :token", { token })
+      .getOne();
 
-    if (!verificationToken || verificationToken.expiresAt < new Date()) {
-      return res.status(400).json({ error: "Недействительный или просроченный токен" });
+    // 2. Если пользователь найден и уже подтверждён
+    if (userWithToken?.isVerified) {
+      return res.json({ 
+        success: true,
+        message: "Этот email уже был подтверждён ранее",
+        email: userWithToken.email,
+        alreadyVerified: true // Флаг для фронтенда
+      });
     }
 
-    // Помечаем пользователя как подтверждённого
-    verificationToken.user.isVerified = true;
-    await userRepository.save(verificationToken.user);
+    // 3. Если есть неподтверждённый пользователь с таким токеном
+    if (userWithToken) {
+      userWithToken.isVerified = true;
+      await userRepository.save(userWithToken);
+      await tokenRepository.delete({ token });
+      
+      return res.json({ 
+        success: true,
+        message: "Email успешно подтверждён!",
+        email: userWithToken.email
+      });
+    }
 
-    // Удаляем токен
-    await tokenRepository.delete(verificationToken.id);
+    // 4. Если ничего не найдено
+    return res.status(400).json({ 
+      success: false,
+      error: "Недействительный токен подтверждения" 
+    });
 
-    res.json({ success: true, message: "Email подтверждён!" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Ошибка сервера" });
+  } catch (error) {
+    logger.error('Verification failed', error);
+    return res.status(500).json({ 
+      success: false,
+      error: "Ошибка сервера"
+    });
   }
 };
