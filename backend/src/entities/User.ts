@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
-import { PasswordResetToken } from "./PasswordResetTokens"; // Не забудьте добавить этот импорт
+import { PasswordResetToken } from "./PasswordResetTokens";
 import { EmailVerificationToken } from "./EmailVerificationToken";
 
 @Entity("users")
@@ -11,8 +11,22 @@ export class User {
   @Column({ type: "varchar", length: 100, unique: true })
   email!: string;
 
+  // Изменено: Приватное поле для хранения хэша
+  private _password_hash!: string;
+
   @Column({ type: "varchar", length: 255 })
-  password_hash!: string;
+  get password_hash(): string {
+    return this._password_hash;
+  }
+
+  set password_hash(value: string) {
+    // Хешируем пароль автоматически при установке значения
+    if (value && !value.startsWith('$2b$')) { // Проверяем, не хэш ли это уже
+      this._password_hash = bcrypt.hashSync(value, 10);
+    } else {
+      this._password_hash = value;
+    }
+  }
 
   @Column({ type: "varchar", length: 20, default: "user" })
   role!: string;
@@ -29,24 +43,14 @@ export class User {
   @Column({ name: "is_verified", default: false })
   isVerified!: boolean;
 
-  // Добавляем связь с токенами сброса пароля
   @OneToMany(() => PasswordResetToken, (token) => token.user)
   resetTokens!: PasswordResetToken[];
 
-  // Автоматическое хеширование пароля перед сохранением
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password_hash) {
-      this.password_hash = await bcrypt.hash(this.password_hash, 10);
-    }
-  }
-
-  // Метод для проверки пароля
-  async comparePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password_hash);
-  }
-
   @OneToMany(() => EmailVerificationToken, (token) => token.user)
   emailVerificationTokens!: EmailVerificationToken[];
+
+  // Упрощенный метод сравнения паролей
+  async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this._password_hash);
+  }
 }

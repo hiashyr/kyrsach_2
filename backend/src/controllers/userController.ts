@@ -82,6 +82,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     user.email = email;
     user.password_hash = password;
     user.isVerified = false;
+    user.password_hash = password;
 
     await userRepository.save(user);
 

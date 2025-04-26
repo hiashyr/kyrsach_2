@@ -66,9 +66,26 @@ AppDataSource.initialize()
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
       console.log("🔑 JWT секрет:", process.env.JWT_SECRET ? "установлен" : "отсутствует");
       console.log("🛣️ Доступные эндпоинты:");
-      console.log("  - POST /api/auth/forgot-password");
-      console.log("  - POST /api/users/register");
-      console.log("  - POST /api/users/login");
+      
+      // Аутентификация
+      console.log("  🔐 Аутентификация:");
+      console.log("    - POST   /api/auth/forgot-password");
+      console.log("    - POST   /api/auth/reset-password");
+      console.log("    - GET    /api/auth/verify-email");
+      console.log("    - POST   /api/auth/verify-email");
+      console.log("    - POST   /api/auth/resend-verification");
+      
+      // Пользователи
+      console.log("  👥 Пользователи:");
+      console.log("    - POST   /api/users/register");
+      console.log("    - POST   /api/users/login");
+      console.log("    - GET    /api/users/me (требуется аутентификация)");
+      console.log("    - GET    /api/users (только для админов)");
+      console.log("    - GET    /api/users/admin-stats (только для админов)");
+      
+      // Health check
+      console.log("  🩺 Проверка состояния:");
+      console.log("    - GET    /");
     });
   })
   .catch((err) => {
