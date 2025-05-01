@@ -8,6 +8,11 @@ import { sendVerificationEmail } from '../services/emailService';
 import crypto from 'crypto';
 import { EmailVerificationToken } from '../entities/EmailVerificationToken';
 import logger from '../config/logger';
+import multer from 'multer';
+import path from 'path';
+
+// Инициализация репозитория
+const userRepository = AppDataSource.getRepository(User);
 
 class RegisterDto {
   @IsEmail({}, { message: 'Некорректный email' })
@@ -26,7 +31,6 @@ class LoginDto {
   password!: string;
 }
 
-const userRepository = AppDataSource.getRepository(User);
 const tokenRepository = AppDataSource.getRepository(EmailVerificationToken);
 
 declare global {
@@ -330,3 +334,133 @@ function generateToken(user: User): string {
     { expiresIn: "2h" }
   );
 }
+
+// Конфигурация Multer для загрузки файлов
+const avatarStorage = multer.diskStorage({
+  destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+    cb(null, 'uploads/avatars/');
+  },
+  filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'avatar-' + uniqueSuffix + ext);
+  }
+});
+
+export const avatarUpload = multer({ 
+  storage: avatarStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  },
+  fileFilter: (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG and GIF are allowed.'));
+    }
+  }
+});
+
+export const uploadAvatar = async (req: Request, res: Response): Promise<void> => { 
+  try {
+    if (!req.file) {
+      res.status(400).json({ 
+        success: false,
+        error: "No file uploaded" 
+      });
+      return; // Добавьте return после отправки ответа
+    }
+
+    if (!req.user) {
+      res.status(401).json({ 
+        success: false,
+        error: "Not authenticated" 
+      });
+      return;
+    }
+
+    const user = await userRepository.findOne({ 
+      where: { id: req.user.id }
+    });
+
+    if (!user) {
+      res.status(404).json({ 
+        success: false,
+        error: "User not found" 
+      });
+      return;
+    }
+
+    // Обновляем аватар пользователя
+    const avatarUrl = `/avatars/${req.file.filename}`;
+    user.avatar_url = avatarUrl;
+    await userRepository.save(user);
+
+    res.json({ 
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        avatarUrl: user.avatar_url
+      }
+    });
+
+  } catch (error) {
+    logger.error('Avatar upload error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: "Failed to upload avatar" 
+    });
+  }
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!req.user) {
+      return res.status(401).json({ 
+        success: false,
+        error: "Not authenticated" 
+      });
+    }
+
+    const user = await userRepository.findOne({ 
+      where: { id: req.user.id },
+      select: ['id', 'password_hash']
+    });
+
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        error: "User not found" 
+      });
+    }
+
+    // Проверяем текущий пароль
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ 
+        success: false,
+        error: "Current password is incorrect" 
+      });
+    }
+
+    // Обновляем пароль
+    user.password_hash = newPassword;
+    await userRepository.save(user);
+
+    res.json({ 
+      success: true,
+      message: "Password updated successfully" 
+    });
+
+  } catch (error) {
+    logger.error('Password change error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: "Failed to change password" 
+    });
+  }
+};
