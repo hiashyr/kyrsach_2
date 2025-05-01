@@ -121,33 +121,61 @@ export const verifyEmail = async (req: Request, res: Response) => {
     const tokenRepository = AppDataSource.getRepository(EmailVerificationToken);
     const userRepository = AppDataSource.getRepository(User);
 
-    // 1. Находим пользователя по токену (даже если токен удалён)
+    // 1. Попробуем найти токен в базе данных
+    const verificationToken = await tokenRepository.findOne({
+      where: { token },
+      relations: ['user']
+    });
+
+    // 2. Если токен найден
+    if (verificationToken) {
+      const user = verificationToken.user;
+
+      // 2a. Проверяем срок действия токена
+      if (verificationToken.expiresAt < new Date()) {
+        await tokenRepository.delete({ id: verificationToken.id });
+        return res.status(400).json({ 
+          success: false,
+          error: "Срок действия токена истёк" 
+        });
+      }
+
+      // 2b. Если пользователь уже подтвержден
+      if (user.isVerified) {
+        await tokenRepository.delete({ id: verificationToken.id });
+        return res.json({ 
+          success: true,
+          message: "Этот email уже был подтверждён ранее",
+          email: user.email,
+          alreadyVerified: true
+        });
+      }
+
+      // 2c. Подтверждаем email
+      user.isVerified = true;
+      await userRepository.save(user);
+      await tokenRepository.delete({ id: verificationToken.id });
+
+      return res.json({ 
+        success: true,
+        message: "Email успешно подтверждён!",
+        email: user.email
+      });
+    }
+
+    // 3. Если токен не найден, проверяем есть ли пользователь с таким email, который уже подтвержден
     const userWithToken = await userRepository
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.emailVerificationTokens", "token")
       .where("token.token = :token", { token })
       .getOne();
 
-    // 2. Если пользователь найден и уже подтверждён
     if (userWithToken?.isVerified) {
       return res.json({ 
         success: true,
         message: "Этот email уже был подтверждён ранее",
         email: userWithToken.email,
-        alreadyVerified: true // Флаг для фронтенда
-      });
-    }
-
-    // 3. Если есть неподтверждённый пользователь с таким токеном
-    if (userWithToken) {
-      userWithToken.isVerified = true;
-      await userRepository.save(userWithToken);
-      await tokenRepository.delete({ token });
-      
-      return res.json({ 
-        success: true,
-        message: "Email успешно подтверждён!",
-        email: userWithToken.email
+        alreadyVerified: true
       });
     }
 

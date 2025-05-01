@@ -327,6 +327,6 @@ function generateToken(user: User): string {
       isVerified: user.isVerified
     },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" }
+    { expiresIn: "2h" }
   );
 }
