@@ -86,9 +86,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     user.email = email;
     user.password_hash = password;
     user.isVerified = false;
-    user.password_hash = password;
+
+    // Логируем перед сохранением
+    logger.info('Creating new user', { email, createdAt: user.createdAt });
 
     await userRepository.save(user);
+
+    // Логируем после сохранения
+    logger.info('User created successfully', { 
+      userId: user.id,
+      createdAt: user.createdAt 
+    });
 
     const token = crypto.randomBytes(32).toString('hex');
     const verificationToken = new EmailVerificationToken();
@@ -252,12 +260,12 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
   try {
     if (!req.user) {
       res.status(401).json({ error: "UNAUTHORIZED" });
-      return; // Явный return вместо отправки Response
+      return;
     }
 
     const user = await userRepository.findOne({
       where: { id: req.user.id },
-      select: ['id', 'email', 'role', 'avatar_url']
+      select: ['id', 'email', 'role', 'avatar_url', 'createdAt'] // Добавлено createdAt
     });
 
     if (!user) {
@@ -265,9 +273,15 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    res.json(user); // Корректный возврат Response
+    // Добавляем логирование для отладки
+    logger.info('User data fetched', { 
+      userId: user.id,
+      hasCreatedAt: !!user.createdAt 
+    });
+
+    res.json(user);
   } catch (error) {
-    console.error("Get user error:", error);
+    logger.error("Get user error:", error);
     res.status(500).json({ error: "SERVER_ERROR" });
   }
 };
