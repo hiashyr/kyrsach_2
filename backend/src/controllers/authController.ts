@@ -53,6 +53,62 @@ export const forgotPassword = async (
   }
 };
 
+
+export const requestPasswordChange = async (req: Request, res: Response) => {
+  try {
+    const { currentPassword, email } = req.body;
+    
+    // 1. Находим пользователя с email
+    const user = await userRepository.findOne({ 
+      where: { email },
+      select: ['id', 'password_hash', 'email']
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "USER_NOT_FOUND" });
+    }
+
+    // 2. Проверяем пароль
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ error: "INVALID_PASSWORD" });
+    }
+
+    // 3. Удаляем старые токены
+    await resetTokenRepository.delete({ user: { id: user.id } });
+
+    // 4. Создаем новый токен
+    const token = crypto.randomBytes(32).toString('hex');
+    await resetTokenRepository.save({
+      user,
+      token,
+      expiresAt: new Date(Date.now() + 3600000), // 1 час
+      isUsed: false
+    });
+
+    // 5. Отправляем письмо
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}&type=change`;
+    await sendPasswordResetEmail(user.email, resetLink, 'change');
+
+    return res.json({ success: true });
+  } catch (error: unknown) { // Явно указываем тип unknown
+    console.error('Password change request error:', error);
+    
+    let errorMessage = "Internal server error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return res.status(500).json({ 
+      error: "SERVER_ERROR",
+      message: errorMessage,
+      ...(process.env.NODE_ENV === 'development' && { 
+        stack: error instanceof Error ? error.stack : undefined 
+      })
+    });
+  }
+};
+
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
   try {
     const { token, newPassword } = req.body;

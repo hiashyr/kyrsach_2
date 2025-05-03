@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { 
   forgotPassword, 
   resetPassword,
-  verifyEmail
+  verifyEmail,
+  requestPasswordChange
 } from '../controllers/authController';
 import { resendVerificationEmail } from '../controllers/userController';
 
@@ -27,6 +28,10 @@ router.post('/verify-email', (req, res, next) => {
 
 router.post('/resend-verification', (req, res, next) => {
   resendVerificationEmail(req, res).catch(next);
+});
+
+router.post('/request-password-change', (req, res, next) => {
+  requestPasswordChange(req, res).catch(next);
 });
 
 export default router;

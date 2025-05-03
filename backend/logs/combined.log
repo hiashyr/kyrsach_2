@@ -1,175 +1,80 @@
-{"expiresAt":"2025-04-26T11:05:34.850Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:05:34","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80","userId":20}
-{"level":"info","message":"Email sent to 7fu9suxud9@zudpck.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:05:36"}
-{"level":"info","message":"Email verified for user: 7fu9suxud9@zudpck.com","timestamp":"2025-04-25 14:06:37","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80","userId":20}
-{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:06:37","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
-{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:07:04","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
-{"level":"error","message":"Token not found in database","timestamp":"2025-04-25 14:07:04","token":"b7808032613baf57a79b0d34c468c7723b71c505911a80a7b2c7cff4bbed5d80"}
-{"expiresAt":"2025-04-26T11:15:59.030Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:15:59","token":"09f8e9f776a464e682892e5eee4e5402e828fb9c0da9ca3cc496fcbde097d714","userId":21}
-{"level":"info","message":"Email sent to uy97sew6pv@zvvzuv.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:16:02"}
-{"expiresAt":"2025-04-26T11:23:01.219Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:23:01","token":"47b3c990e448c6eca9835ef25aca66ffe0825542b26cf7fd415ffcd63f6f3b76","userId":22}
-{"level":"info","message":"Email sent to yubltdaeur@smykwb.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:23:02"}
-{"expiresAt":"2025-04-26T11:36:36.684Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:36:36","token":"9b09dd2d664924bc9c06afb1fcef7ceba15fb4f0b61417a0449233bd2c565656","userId":23}
-{"level":"info","message":"Email sent to 4joqy6h5iu@wyoxafp.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:36:39"}
-{"expiresAt":"2025-04-26T11:44:34.039Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 14:44:34","token":"ad571a9c423056f0ea89350083178bd299e7ca36dbec8dc773d3a4f7bae540ec","userId":24}
-{"level":"info","message":"Email sent to mta2pcn51i@wywnxa.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 14:44:37"}
-{"level":"info","message":"Email sent to mta2pcn51i@wywnxa.com","subject":"Восстановление пароля","timestamp":"2025-04-25 16:33:59"}
-{"expiresAt":"2025-04-26T13:42:08.354Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 16:42:08","token":"c501862f222f4cbc9977e491fd80a55a197d2db51ea7af83756a2e587fb653fa","userId":25}
-{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 16:42:10"}
-{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Восстановление пароля","timestamp":"2025-04-25 16:46:27"}
-{"expiresAt":"2025-04-26T13:52:25.899Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 16:52:25","token":"dce2ffe46565cc4f4e74b63ff6fc9cbfb43faf988931a5e9379cb6eeedb6aa5a","userId":26}
-{"level":"info","message":"Email sent to shlimakovvvova@gmail.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 16:52:28"}
-{"expiresAt":"2025-04-26T15:16:19.164Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 18:16:19","token":"0731ed0b8db36dae63550e9513970c36f98ecacaf16fdafe237ef7293789b2fe","userId":27}
-{"level":"info","message":"Email sent to gi942j0lnw@qzueos.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 18:16:21"}
-{"level":"info","message":"Email sent to gi942j0lnw@qzueos.com","subject":"Восстановление пароля","timestamp":"2025-04-25 18:18:43"}
-{"expiresAt":"2025-04-26T15:19:44.590Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 18:19:44","token":"c607b0ac0afa6cebba23cf615edaffabf6ddde8b3123c3f781a5eed9e3418540","userId":28}
-{"level":"info","message":"Email sent to yw6j74vfry@daouse.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 18:19:46"}
-{"expiresAt":"2025-04-26T16:02:45.976Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 19:02:45","token":"fe64b29a261858d93d949ff6436bc60b8fb43dd3684bc79b923a07af9b042c08","userId":29}
-{"level":"info","message":"Email sent to 433kp06m16@osxofulk.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 19:02:48"}
-{"level":"info","message":"Email sent to 433kp06m16@osxofulk.com","subject":"Восстановление пароля","timestamp":"2025-04-25 19:04:12"}
-{"expiresAt":"2025-04-26T16:04:52.392Z","level":"info","message":"Verification token created","timestamp":"2025-04-25 19:04:52","token":"4b7efa76e96e9a4f2619a2b1a4fff9e3aae0e561c53715d32813d2d6d36513c3","userId":30}
-{"level":"info","message":"Email sent to mced8uurd9@mkzaso.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-25 19:04:54"}
-{"level":"info","message":"Email sent to mced8uurd9@mkzaso.com","subject":"Восстановление пароля","timestamp":"2025-04-25 19:06:46"}
-{"expiresAt":"2025-04-27T11:22:18.365Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 14:22:18","token":"64278effda881bac27fdfe0a888b2b0776991a09c3fc69b44326c3758d2e1df6","userId":31}
-{"level":"info","message":"Email sent to mmioe1blvn@wyoxafp.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 14:22:21"}
-{"expiresAt":"2025-04-27T13:08:15.781Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:08:15","token":"cd284abd5d1d9fc15ff5a60a5b6d1066fe3f7e954a0636ef7f68f2d642dbcdef","userId":32}
-{"level":"info","message":"Email sent to y1kslwngg8@knmcadibav.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:08:18"}
-{"level":"info","message":"Email sent to y1kslwngg8@knmcadibav.com","subject":"Восстановление пароля","timestamp":"2025-04-26 16:10:23"}
-{"expiresAt":"2025-04-27T13:15:32.235Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:15:32","token":"25724ef49a891e939919978925bacf482716fc5245f051e6f88a503713b645e6","userId":33}
-{"level":"info","message":"Email sent to u7mk8e3d7t@wyoxafp.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:15:34"}
-{"expiresAt":"2025-04-27T13:29:31.226Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:29:31","token":"178994b97edb71736d3ea072d8132b234d75968e6dde5e467d6dad459b052eac","userId":34}
-{"level":"info","message":"Email sent to x9sk7zk8eg@knmcadibav.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:29:32"}
-{"expiresAt":"2025-04-27T13:31:31.301Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:31:31","token":"9ddc29aabebf78687f7348c35548090f7ed2faefd0afed9996d0951cfc13ab56","userId":35}
-{"level":"info","message":"Email sent to jhpe6qxm51@zudpck.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:31:33"}
-{"expiresAt":"2025-04-27T13:32:33.604Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:32:33","token":"b42400a4d22ed24c316ad7ff35c6262090c99a85bd37951cf9e157b89272e06c","userId":36}
-{"level":"info","message":"Email sent to 4hz827oihr@qzueos.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:32:36"}
-{"expiresAt":"2025-04-27T13:49:24.778Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:49:24","token":"fc36a172249c993b281096f7d412e1ec0868d50059ae675696a7eb5d12e0486d","userId":37}
-{"level":"info","message":"Email sent to mj1m2n2zoi@jkotypc.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:49:26"}
-{"expiresAt":"2025-04-27T13:51:49.565Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:51:49","token":"0df766d56c3a62a4ab2732eab1875a703d093b9eaf5bde300459c72c0c271cc9","userId":38}
-{"level":"info","message":"Email sent to zz0j8dqc1p@qejjyl.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:51:51"}
-{"expiresAt":"2025-04-27T13:52:55.001Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 16:52:55","token":"766a3eb6692a360dd16080ec794b61d38d92c0ad4257a59a54e9caa8fd69ed78","userId":39}
-{"level":"info","message":"Email sent to hf9naeix31@smykwb.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 16:52:57"}
-{"expiresAt":"2025-04-27T14:19:07.718Z","level":"info","message":"Verification token created","timestamp":"2025-04-26 17:19:07","token":"851f7f54f9147b391244d8e401cc12462910ce4e0d650a35d79fc51dd61b114d","userId":40}
-{"level":"info","message":"Email sent to ncw9gkuleq@zudpck.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-26 17:19:09"}
-{"expiresAt":"2025-04-28T09:00:49.175Z","level":"info","message":"Verification token created","timestamp":"2025-04-27 12:00:49","token":"efb8d83a3d7835a68004c36c2f12fa5070c54972f74ebaff547aab9003661f4c","userId":50}
-{"level":"info","message":"Email sent to lt4mpbxsqr@osxofulk.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-27 12:00:52"}
-{"expiresAt":"2025-04-28T09:48:16.108Z","level":"info","message":"Verification token created","timestamp":"2025-04-27 12:48:16","token":"d293051c00b2f9681347be255286c330e373585cfafccc46c98235fc211fa59d","userId":51}
-{"level":"info","message":"Email sent to vpvyqf0za6@bltiwd.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-04-27 12:48:17"}
-{"expiresAt":"2025-05-02T12:24:16.745Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 15:24:16","token":"8e43bedc01e474c727fc267b01b66e9fceead46bcf90157c58c5599f6b7cd9bf","userId":67}
-{"level":"info","message":"Email sent to 6hjge3nhek@jkotypc.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 15:24:19"}
-{"expiresAt":"2025-05-02T13:31:30.619Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 16:31:30","token":"ef0925b8398e943777830556b5b5988f1371518c6ccdeaeacf3ac8e349f1a1b9","userId":68}
-{"level":"info","message":"Email sent to l1l2lhba6c@bltiwd.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 16:31:32"}
-{"expiresAt":"2025-05-02T14:12:25.185Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:12:25","token":"bff12f484798f8d513c4931cd6d4ac6fcb691778c60f8c310448893d6c7c7237","userId":69}
-{"level":"info","message":"Email sent to m8dn7mlynr@qejjyl.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:12:26"}
-{"expiresAt":"2025-05-02T14:14:18.321Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:14:18","token":"e6e07ae049852846c2625d52b77061c2f83d16b5f9be4499c3749b515a8e84d8","userId":70}
-{"level":"info","message":"Email sent to 47re57e4py@illubd.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:14:19"}
-{"expiresAt":"2025-05-02T14:21:47.820Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:21:47","token":"1525c9cc96126e53098fcd9a702e56d3ed51c62c027ba228c01513db06e9b915","userId":71}
-{"level":"info","message":"Email sent to rxv1lk3i42@tidissajiiu.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:21:49"}
-{"expiresAt":"2025-05-02T14:22:33.520Z","level":"info","message":"New verification token created","timestamp":"2025-05-01 17:22:33","token":"ee537d28c11d682e73cb6ff64467a3058d110c5271672aa2dadc06e131fe9282","userId":71}
-{"level":"info","message":"Email sent to rxv1lk3i42@tidissajiiu.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:22:35"}
-{"expiresAt":"2025-05-02T14:25:23.966Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:25:23","token":"33a58c99f169c1a2c7a3d24e38a33f50a28aed4a0edcb4482bdc03bdb3624928","userId":72}
-{"level":"info","message":"Email sent to 01owfj7n6b@wywnxa.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:25:25"}
-{"expiresAt":"2025-05-02T14:31:12.322Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:31:12","token":"21c43656efde110670cba09fe6040a7e3d1081164dd7862c99c01e197befb215","userId":73}
-{"level":"info","message":"Email sent to caq6b9s5b4@dygovil.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:31:13"}
-{"expiresAt":"2025-05-02T14:49:12.992Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:49:13","token":"2d30ef2b9a86d963f32fd1c19e433d96d41ebc093ceb660d19de9b0a54c11765","userId":74}
-{"level":"info","message":"Email sent to 72bam01hwd@zvvzuv.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:49:14"}
-{"expiresAt":"2025-05-02T14:52:29.319Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 17:52:29","token":"a4345f925a833efef8f7647a1a97d4d7c4915f578a6f96bd2d3019f067549dcb","userId":75}
-{"level":"info","message":"Email sent to deswytaz7w@wyoxafp.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 17:52:30"}
-{"expiresAt":"2025-05-02T15:00:59.293Z","level":"info","message":"Verification token created","timestamp":"2025-05-01 18:00:59","token":"1aff66ddab9580e95bef9e0528bd554f68ead5c58ab52dd36f20ad4450a28fe6","userId":76}
-{"level":"info","message":"Email sent to zjut44qn50@mrotzis.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-01 18:01:01"}
-{"expiresAt":"2025-05-03T10:45:47.936Z","level":"info","message":"Verification token created","timestamp":"2025-05-02 13:45:47","token":"0a200497983761fe1fa9d74959aaa70292a50507368b019c5f5e508a8801cd1e","userId":1}
-{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-02 13:45:50"}
-{"expiresAt":"2025-05-03T10:46:56.413Z","level":"info","message":"Verification token created","timestamp":"2025-05-02 13:46:56","token":"88a72bf08b272ef05c7b92408bbd85a6430d54d257eede761053c253054760b7","userId":2}
-{"level":"info","message":"Email sent to shlimakovvvova@gmail.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-02 13:46:57"}
-{"expiresAt":"2025-05-03T10:47:46.850Z","level":"info","message":"Verification token created","timestamp":"2025-05-02 13:47:46","token":"064a87c406b30b49e460d4f4f27e2ba9d18517189e7d7fdb168ed96b29b4d59d","userId":3}
-{"level":"info","message":"Email sent to oxc3vjdqqo@zudpck.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-02 13:47:48"}
-{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Восстановление пароля","timestamp":"2025-05-02 14:59:56"}
-{"level":"info","message":"Email sent to oxc3vjdqqo@zudpck.com","subject":"Восстановление пароля","timestamp":"2025-05-02 15:17:58"}
-{"level":"info","message":"Email sent to shlimakovv@mail.ru","subject":"Восстановление пароля","timestamp":"2025-05-02 18:37:24"}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:56:30","userId":2}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:56:31","userId":2}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:56:31","userId":2}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:56:31","userId":2}
-{"email":"m6y6gt5c2k@vafyxh.com","level":"info","message":"Creating new user","timestamp":"2025-05-02 19:56:46"}
-{"createdAt":"2025-05-02T16:56:46.449Z","level":"info","message":"User created successfully","timestamp":"2025-05-02 19:56:46","userId":4}
-{"expiresAt":"2025-05-03T16:56:46.473Z","level":"info","message":"Verification token created","timestamp":"2025-05-02 19:56:46","token":"d026d96ee20693e583eb17f759020a058b44af443490421bef1476dec4c9fd39","userId":4}
-{"level":"info","message":"Email sent to m6y6gt5c2k@vafyxh.com","subject":"Подтверждение email для ПДД Тренажёра","timestamp":"2025-05-02 19:56:48"}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:57:06","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:57:07","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:57:07","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 19:57:08","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:06:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:06:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:06:30","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:06:30","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:07:39","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:07:39","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:10:04","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:10:04","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:10:19","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:10:19","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:17:56","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:17:56","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:18:58","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:18:58","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:19:29","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:19:29","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:20:49","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:20:49","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:21:32","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:21:32","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:22:02","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:22:02","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:22:52","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:22:52","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:25:43","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:25:43","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:30:28","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:30:28","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:03","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:03","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:12","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:12","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:15","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:16","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:16","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:16","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:16","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:17","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:40","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:32:40","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:42","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:42","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:51","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:33:51","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:34:23","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:34:24","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:42:53","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:42:53","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:42:54","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:43:25","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:43:25","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:43:25","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:44:14","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:44:14","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:44:15","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:44:16","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:45:45","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:45:45","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:52:10","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:52:10","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:56:19","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:56:20","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:56:25","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:56:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:56:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:57:20","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:59:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 20:59:27","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:00:23","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:00:24","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:00:24","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:00:26","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:00:30","userId":4}
-{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-02 21:01:42","userId":4}
+{"level":"info","message":"Email successfully sent to shlimakovvvova@gmail.com","timestamp":"2025-05-03 15:14:48"}
+{"level":"info","message":"Email successfully sent to shlimakovvvova@gmail.com","timestamp":"2025-05-03 15:18:53"}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:18:58","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:18:58","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:19:51","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:19:51","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:19:56","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:19:56","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:21:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 15:21:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:10","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:12","userId":2}
+{"level":"info","message":"Email successfully sent to shlimakovvvova@gmail.com","timestamp":"2025-05-03 18:37:18"}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:37:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:31","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:31","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:31","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:31","userId":2}
+{"level":"info","message":"Email successfully sent to shlimakovvvova@gmail.com","timestamp":"2025-05-03 18:42:42"}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:53","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:53","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:53","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:42:53","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:43:02","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:43:02","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:27","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:28","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:28","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:29","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:29","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:29","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:29","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:48:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:09","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:09","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:09","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:09","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:11","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:18","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:18","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:20","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:49:20","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:50:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:50:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:50:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 18:50:46","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:05:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:05:12","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:03","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:03","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:03","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:03","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:04","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:04","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:32","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:32","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:32","userId":2}
+{"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-03 22:06:32","userId":2}
