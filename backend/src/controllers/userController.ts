@@ -265,7 +265,7 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
 
     const user = await userRepository.findOne({
       where: { id: req.user.id },
-      select: ['id', 'email', 'role', 'avatar_url', 'createdAt'] // Добавлено createdAt
+      select: ['id', 'email', 'role', 'avatar_url', 'createdAt']
     });
 
     if (!user) {
@@ -273,13 +273,15 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Добавляем логирование для отладки
-    logger.info('User data fetched', { 
-      userId: user.id,
-      hasCreatedAt: !!user.createdAt 
-    });
+    // Добавляем полный URL к аватару
+    const userResponse = {
+      ...user,
+      avatarUrl: user.avatar_url 
+        ? `${process.env.FRONTEND_URL || process.env.API_URL || ''}${user.avatar_url}`
+        : null
+    };
 
-    res.json(user);
+    res.json(userResponse);
   } catch (error) {
     logger.error("Get user error:", error);
     res.status(500).json({ error: "SERVER_ERROR" });
@@ -376,16 +378,49 @@ export const avatarUpload = multer({
   }
 });
 
-export const uploadAvatar = async (req: Request, res: Response): Promise<void> => { 
+export const uploadAvatar = async (req: Request & { user?: User }, res: Response) => {
   try {
-    if (!req.file) {
-      res.status(400).json({ 
-        success: false,
-        error: "No file uploaded" 
-      });
-      return; // Добавьте return после отправки ответа
+    // 1. Проверка аутентификации
+    if (!req.user) {
+      return res.status(401).json({ error: 'Необходима авторизация' });
     }
 
+    // 2. Проверка загруженного файла
+    if (!req.file) {
+      return res.status(400).json({ error: 'Файл не был загружен' });
+    }
+
+    // 3. Обновление аватара в БД
+    const userRepository = AppDataSource.getRepository(User);
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    
+    await userRepository.update(req.user.id, { avatar_url: avatarUrl });
+
+    // 4. Возвращаем новый URL аватара
+    res.json({ 
+      success: true,
+      avatarUrl 
+    });
+
+  } catch (error) {
+    console.error('Ошибка загрузки аватара:', error);
+    res.status(500).json({ 
+      error: 'Ошибка сервера при загрузке аватара',
+      ...(process.env.NODE_ENV === 'development' && { 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      })
+    });
+  }
+};
+
+export const changePassword = async (
+  req: Request & { user?: User },
+  res: Response
+): Promise<void> => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // 1. Проверка аутентификации
     if (!req.user) {
       res.status(401).json({ 
         success: false,
@@ -394,8 +429,12 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
+    const userRepository = AppDataSource.getRepository(User);
+
+    // 2. Поиск пользователя
     const user = await userRepository.findOne({ 
-      where: { id: req.user.id }
+      where: { id: req.user.id },
+      select: ['id', 'password_hash']
     });
 
     if (!user) {
@@ -406,76 +445,35 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Обновляем аватар пользователя
-    const avatarUrl = `/avatars/${req.file.filename}`;
-    user.avatar_url = avatarUrl;
-    await userRepository.save(user);
-
-    res.json({ 
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        avatarUrl: user.avatar_url
-      }
-    });
-
-  } catch (error) {
-    logger.error('Avatar upload error:', error);
-    res.status(500).json({ 
-      success: false,
-      error: "Failed to upload avatar" 
-    });
-  }
-};
-
-export const changePassword = async (req: Request, res: Response) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-
-    if (!req.user) {
-      return res.status(401).json({ 
-        success: false,
-        error: "Not authenticated" 
-      });
-    }
-
-    const user = await userRepository.findOne({ 
-      where: { id: req.user.id },
-      select: ['id', 'password_hash']
-    });
-
-    if (!user) {
-      return res.status(404).json({ 
-        success: false,
-        error: "User not found" 
-      });
-    }
-
-    // Проверяем текущий пароль
+    // 3. Проверка текущего пароля
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false,
         error: "Current password is incorrect" 
       });
+      return;
     }
 
-    // Обновляем пароль
+    // 4. Обновление пароля
     user.password_hash = newPassword;
     await userRepository.save(user);
 
+    // 5. Успешный ответ
     res.json({ 
       success: true,
       message: "Password updated successfully" 
     });
 
   } catch (error) {
+    // 6. Обработка ошибок
     logger.error('Password change error:', error);
     res.status(500).json({ 
       success: false,
-      error: "Failed to change password" 
+      error: "Failed to change password",
+      ...(process.env.NODE_ENV === 'development' && {
+        details: error instanceof Error ? error.message : 'Unknown error'
+      })
     });
   }
 };
-

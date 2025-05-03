@@ -4,6 +4,7 @@ import { AppDataSource } from "./config/data-source";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
+import path from "path"; // Добавлен импорт path
 
 const app = express();
 const PORT = 5000;
@@ -16,11 +17,15 @@ if (!process.env.JWT_SECRET) {
 
 // Middleware
 app.use(cors({ 
-  origin: "http://localhost:3000",
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  credentials: true,
+  exposedHeaders: ['Content-Disposition'] // Добавьте если нужно
 }));
 app.use(express.json());
+
+// Добавлено: Middleware для обслуживания статических файлов
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // Логирование входящих запросов (для отладки)
 app.use((req, res, next) => {
@@ -40,7 +45,8 @@ app.get("/", (req, res) => {
     endpoints: {
       users: "/api/users",
       auth: "/api/auth",
-      forgot_password: "POST /api/auth/forgot-password"
+      forgot_password: "POST /api/auth/forgot-password",
+      upload_avatar: "POST /api/users/upload-avatar" // Добавлен новый эндпоинт
     },
     timestamp: new Date().toISOString()
   });

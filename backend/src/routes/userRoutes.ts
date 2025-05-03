@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from 'express';
 import { 
   register, 
   login, 
@@ -6,29 +6,52 @@ import {
   getUsers,
   getAdminStats,
   uploadAvatar, 
-  changePassword, 
-  avatarUpload
-} from "../controllers/userController";
-import authMiddleware from "../middlewares/authMiddleware";
+  changePassword
+} from '../controllers/userController';
+import authMiddleware from '../middlewares/authMiddleware';
+import { upload } from '../config/multer';
+import { User } from '../entities/User';
 
 const router = Router();
 
-// Добавьте эту функцию-обёртку
-const asyncHandler = (fn: any) => (req: any, res: any, next: any) => {
+// Расширенный тип Request с пользователем
+interface AuthenticatedRequest extends Request {
+  user?: User;
+}
+
+// Универсальный asyncHandler с правильной типизацией
+const asyncHandler = <T extends Request>(
+  fn: (req: T, res: Response, next?: NextFunction) => Promise<Response | void>
+) => (req: T, res: Response, next: NextFunction) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-router.post("/register", asyncHandler(register));
-router.post("/login", asyncHandler(login));
-router.get("/me", authMiddleware, asyncHandler(getCurrentUser));
+// Public routes
+router.post("/register", asyncHandler<Request>(register));
+router.post("/login", asyncHandler<Request>(login));
+
+// Authenticated routes
+router.get("/me", authMiddleware, asyncHandler<AuthenticatedRequest>(getCurrentUser));
 router.post(
-  '/upload-avatar', 
+  '/change-password', 
   authMiddleware, 
-  avatarUpload.single('avatar'), 
-  asyncHandler(uploadAvatar)
+  asyncHandler<AuthenticatedRequest>(changePassword)
 );
-router.post('/change-password', authMiddleware, asyncHandler(changePassword));
-router.get("/", authMiddleware, asyncHandler(getUsers));
-router.get("/admin-stats", authMiddleware, asyncHandler(getAdminStats));
+
+// Avatar upload
+router.post(
+  '/upload-avatar',
+  authMiddleware,
+  upload.single('avatar'),
+  asyncHandler<AuthenticatedRequest & { file?: Express.Multer.File }>(uploadAvatar)
+);
+
+// Admin routes
+router.get("/", authMiddleware, asyncHandler<AuthenticatedRequest>(getUsers));
+router.get(
+  "/admin-stats", 
+  authMiddleware, 
+  asyncHandler<AuthenticatedRequest>(getAdminStats)
+);
 
 export default router;
