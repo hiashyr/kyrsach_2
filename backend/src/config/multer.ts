@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { Request } from 'express';
 
-const uploadDir = path.join(__dirname, '../../public/uploads/avatars');
+const uploadDir = path.join(__dirname, '../../uploads/avatars');
 
 const storage = multer.diskStorage({
   destination: uploadDir,

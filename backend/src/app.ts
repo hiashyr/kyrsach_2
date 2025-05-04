@@ -17,7 +17,7 @@ if (!process.env.JWT_SECRET) {
 
 // Middleware
 app.use(cors({ 
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: process.env.FRONTEND_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   exposedHeaders: ['Content-Disposition'] // Добавьте если нужно
@@ -25,7 +25,11 @@ app.use(cors({
 app.use(express.json());
 
 // Добавлено: Middleware для обслуживания статических файлов
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, '../uploads'), {
+  setHeaders: (res) => {
+    res.set('Cache-Control', 'no-store');
+  }
+}));
 
 // Логирование входящих запросов (для отладки)
 app.use((req, res, next) => {

@@ -146,3 +146,99 @@
 {"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-04 00:45:09","userId":2}
 {"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-04 00:45:10","userId":2}
 {"hasCreatedAt":true,"level":"info","message":"User data fetched","timestamp":"2025-05-04 00:45:10","userId":2}
+{"email":"rw3dxiudab@ibolinva.com","level":"info","message":"Creating new user","timestamp":"2025-05-04 14:05:16"}
+{"createdAt":"2025-05-04T11:05:16.321Z","level":"info","message":"User created successfully","timestamp":"2025-05-04 14:05:16","userId":5}
+{"expiresAt":"2025-05-05T11:05:16.341Z","level":"info","message":"Verification token created","timestamp":"2025-05-04 14:05:16","token":"880c8c58419ccdf15566971b101c14e9cf960e376a9c7443f2aa527107b2026b","userId":5}
+{"level":"info","message":"Email successfully sent to rw3dxiudab@ibolinva.com","timestamp":"2025-05-04 14:05:18"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 14:05:49","userId":5}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 14:05:49"}
+{"avatarUrl":"/uploads/avatars/d1a4c45272e688a1500311a73e768539.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 14:05:49","userId":5}
+{"avatarUrl":"/uploads/avatars/d1a4c45272e688a1500311a73e768539.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 14:05:49"}
+{"email":"ji7ve4j7b5@cmhvzylmfc.com","level":"info","message":"Creating new user","timestamp":"2025-05-04 15:25:08"}
+{"createdAt":"2025-05-04T12:25:08.908Z","level":"info","message":"User created successfully","timestamp":"2025-05-04 15:25:08","userId":6}
+{"expiresAt":"2025-05-05T12:25:08.924Z","level":"info","message":"Verification token created","timestamp":"2025-05-04 15:25:08","token":"6cfc5b8c75955fd11985f35064991cda6733ec61fd980e579d1c14d4fe16ba97","userId":6}
+{"level":"info","message":"Email successfully sent to ji7ve4j7b5@cmhvzylmfc.com","timestamp":"2025-05-04 15:25:10"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:25:36","userId":6}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 15:25:36"}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/5e89c47257e8cdb0093e70110207f68b.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:25:36","userId":6}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/5e89c47257e8cdb0093e70110207f68b.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:25:36"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:28:04","userId":6}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 15:28:04"}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/4c32521f22d902f9f1a91320486aac72.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:28:04","userId":6}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/4c32521f22d902f9f1a91320486aac72.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:28:04"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:29:51","userId":6}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 15:29:51"}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/0c658a7626aaca248a1caa9358654b38.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:29:51","userId":6}
+{"avatarUrl":"http://localhost:5000/uploads/avatars/0c658a7626aaca248a1caa9358654b38.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:29:51"}
+{"email":"x4b82g4902@wyoxafp.com","level":"info","message":"Creating new user","timestamp":"2025-05-04 15:34:12"}
+{"createdAt":"2025-05-04T12:34:12.336Z","level":"info","message":"User created successfully","timestamp":"2025-05-04 15:34:12","userId":7}
+{"expiresAt":"2025-05-05T12:34:12.353Z","level":"info","message":"Verification token created","timestamp":"2025-05-04 15:34:12","token":"2898291111e38c8ca707107c7547274da18da8dfc1c753c4cefd7ea6a33991a2","userId":7}
+{"level":"info","message":"Email successfully sent to x4b82g4902@wyoxafp.com","timestamp":"2025-05-04 15:34:15"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:34:54","userId":7}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 15:34:54"}
+{"avatarUrl":"/uploads/avatars/59bf2cbd85b16dce371d5a68ff2a2d21.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:34:54","userId":7}
+{"avatarUrl":"/uploads/avatars/59bf2cbd85b16dce371d5a68ff2a2d21.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:34:54"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:45:42","userId":7}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-04 15:45:42"}
+{"avatarUrl":"/uploads/avatars/b21b071186e03e64f78f02a7276460d3.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:45:42","userId":7}
+{"avatarUrl":"/uploads/avatars/b21b071186e03e64f78f02a7276460d3.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:45:42"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 15:48:09","userId":7}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-04 15:48:09"}
+{"avatarUrl":"/uploads/avatars/5a5692dc3dc85b88449bea600392c0e4.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 15:48:09","userId":7}
+{"avatarUrl":"/uploads/avatars/5a5692dc3dc85b88449bea600392c0e4.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 15:48:09"}
+{"email":"8qel00tl7m@vafyxh.com","level":"info","message":"Creating new user","timestamp":"2025-05-04 16:00:56"}
+{"createdAt":"2025-05-04T13:00:56.123Z","level":"info","message":"User created successfully","timestamp":"2025-05-04 16:00:56","userId":8}
+{"expiresAt":"2025-05-05T13:00:56.137Z","level":"info","message":"Verification token created","timestamp":"2025-05-04 16:00:56","token":"1449ce55e4b5d3edbf291b6ff38876fa39bfc3652a63dc2921d664f023e6eca9","userId":8}
+{"level":"info","message":"Email successfully sent to 8qel00tl7m@vafyxh.com","timestamp":"2025-05-04 16:00:57"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 16:01:41","userId":8}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 16:01:41"}
+{"avatarUrl":"/api/uploads/avatars/8cd25a53679c7effe83ff724c0b3a60a.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 16:01:41","userId":8}
+{"avatarUrl":"/api/uploads/avatars/8cd25a53679c7effe83ff724c0b3a60a.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 16:01:41"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 16:05:53","userId":8}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-04 16:05:53"}
+{"avatarUrl":"/api/uploads/avatars/807f3e184bb96601815aa51888071792.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 16:05:53","userId":8}
+{"avatarUrl":"/api/uploads/avatars/807f3e184bb96601815aa51888071792.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 16:05:53"}
+{"email":"iv8e3skp6n@ibolinva.com","level":"info","message":"Creating new user","timestamp":"2025-05-04 16:16:26"}
+{"createdAt":"2025-05-04T13:16:26.277Z","level":"info","message":"User created successfully","timestamp":"2025-05-04 16:16:26","userId":9}
+{"expiresAt":"2025-05-05T13:16:26.290Z","level":"info","message":"Verification token created","timestamp":"2025-05-04 16:16:26","token":"c3c33e746817cd96e4e0a0a7a16ac98172cdd7758be4b5aff802e58024c3b8ea","userId":9}
+{"level":"info","message":"Email successfully sent to iv8e3skp6n@ibolinva.com","timestamp":"2025-05-04 16:16:28"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 16:17:11","userId":9}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-04 16:17:11"}
+{"avatarUrl":"/uploads/avatars/d0d56f23d14f82f7bdca06d2dab408d8.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 16:17:11","userId":9}
+{"avatarUrl":"/uploads/avatars/d0d56f23d14f82f7bdca06d2dab408d8.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 16:17:11"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-04 16:21:06","userId":9}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-04 16:21:06"}
+{"avatarUrl":"/uploads/avatars/ed45a5f398fb5cab5e583ff3a773b63d.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-04 16:21:06","userId":9}
+{"avatarUrl":"/uploads/avatars/ed45a5f398fb5cab5e583ff3a773b63d.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-04 16:21:06"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 00:51:28","userId":2}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 00:51:28"}
+{"avatarUrl":"/uploads/avatars/c9d2827453c538514f597004b1d40072.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 00:51:28","userId":2}
+{"avatarUrl":"/uploads/avatars/c9d2827453c538514f597004b1d40072.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 00:51:28"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 00:52:17","userId":2}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 00:52:17"}
+{"avatarUrl":"/uploads/avatars/ba861a0db61c11636ea1c2e542c3b37b.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 00:52:17","userId":2}
+{"avatarUrl":"/uploads/avatars/ba861a0db61c11636ea1c2e542c3b37b.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 00:52:17"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 00:53:37","userId":2}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 00:53:37"}
+{"avatarUrl":"/uploads/avatars/98f8ddbd735983fee9b335ea7834a256.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 00:53:37","userId":2}
+{"avatarUrl":"/uploads/avatars/98f8ddbd735983fee9b335ea7834a256.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 00:53:37"}
+{"email":"cj6fwxhq0a@wyoxafp.com","level":"info","message":"Creating new user","timestamp":"2025-05-05 01:13:46"}
+{"createdAt":"2025-05-04T22:13:46.494Z","level":"info","message":"User created successfully","timestamp":"2025-05-05 01:13:46","userId":10}
+{"expiresAt":"2025-05-05T22:13:46.527Z","level":"info","message":"Verification token created","timestamp":"2025-05-05 01:13:46","token":"f2501755e86189aa489e1ee0510ebc44a88a9fe40f3c1b61db91d5092e5ab0b3","userId":10}
+{"level":"info","message":"Email successfully sent to cj6fwxhq0a@wyoxafp.com","timestamp":"2025-05-05 01:13:48"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 01:16:01","userId":10}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 01:16:01"}
+{"avatarUrl":"/api/uploads/avatars/82092e3c4afcf2704326c3b7e55b5b36.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 01:16:01","userId":10}
+{"avatarUrl":"/api/uploads/avatars/82092e3c4afcf2704326c3b7e55b5b36.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 01:16:01"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 01:26:04","userId":10}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 01:26:04"}
+{"avatarUrl":"/api/uploads/avatars/41cc0804010b09c500660e65ce6c915d.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 01:26:04","userId":10}
+{"avatarUrl":"/api/uploads/avatars/41cc0804010b09c500660e65ce6c915d.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 01:26:04"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 01:37:07","userId":10}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-05 01:37:07"}
+{"avatarUrl":"/api/uploads/avatars/c05d1b34b3b3b9bbbc970f845a8d6ed3.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 01:37:07","userId":10}
+{"avatarUrl":"/api/uploads/avatars/c05d1b34b3b3b9bbbc970f845a8d6ed3.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 01:37:07"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-05 01:37:20","userId":10}
+{"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 01:37:20"}
+{"avatarUrl":"/api/uploads/avatars/c9bbff26c26c96ce47e6bb11e89b56e8.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 01:37:20","userId":10}
+{"avatarUrl":"/api/uploads/avatars/c9bbff26c26c96ce47e6bb11e89b56e8.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 01:37:20"}

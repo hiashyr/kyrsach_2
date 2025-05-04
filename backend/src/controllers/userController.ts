@@ -273,11 +273,14 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Добавляем полный URL к аватару
+    // Формируем правильный URL к аватару
     const userResponse = {
-      ...user,
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
       avatarUrl: user.avatar_url 
-        ? `${process.env.FRONTEND_URL || process.env.API_URL || ''}${user.avatar_url}`
+        ? `${process.env.API_URL || 'http://localhost:5000'}${user.avatar_url}`
         : null
     };
 
@@ -287,7 +290,6 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ error: "SERVER_ERROR" });
   }
 };
-
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     if (req.user?.role !== 'admin') {
@@ -380,35 +382,48 @@ export const avatarUpload = multer({
 
 export const uploadAvatar = async (req: Request & { user?: User }, res: Response) => {
   try {
-    // 1. Проверка аутентификации
+    logger.info('Upload avatar started', { userId: req.user?.id });
+    
     if (!req.user) {
+      logger.error('Upload avatar failed - no user in request');
       return res.status(401).json({ error: 'Необходима авторизация' });
     }
 
-    // 2. Проверка загруженного файла
     if (!req.file) {
+      logger.error('Upload avatar failed - no file uploaded');
       return res.status(400).json({ error: 'Файл не был загружен' });
     }
 
-    // 3. Обновление аватара в БД
-    const userRepository = AppDataSource.getRepository(User);
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-    
-    await userRepository.update(req.user.id, { avatar_url: avatarUrl });
+    logger.info('File received', {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
 
-    // 4. Возвращаем новый URL аватара
+    const avatarUrl = `/api/uploads/avatars/${req.file.filename}`;
+    logger.info('Updating user avatar', { userId: req.user.id, avatarUrl });
+
+    await userRepository.update(req.user.id, { avatar_url: avatarUrl });
+    
+    logger.info('Avatar updated successfully', { avatarUrl });
+    
     res.json({ 
       success: true,
       avatarUrl 
     });
-
   } catch (error) {
-    console.error('Ошибка загрузки аватара:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    logger.error('Avatar upload error', {
+      error: errorMessage,
+      stack: errorStack,
+      userId: req.user?.id
+    });
+      
     res.status(500).json({ 
       error: 'Ошибка сервера при загрузке аватара',
-      ...(process.env.NODE_ENV === 'development' && { 
-        details: error instanceof Error ? error.message : 'Unknown error' 
-      })
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
     });
   }
 };
