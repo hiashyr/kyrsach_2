@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
 import path from "path"; // Добавлен импорт path
+import examRoutes from './routes/exam.routes';
 
 const app = express();
 const PORT = 5000;
@@ -40,6 +41,8 @@ app.use((req, res, next) => {
 // Подключение роутов
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use('/api/exam', examRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {

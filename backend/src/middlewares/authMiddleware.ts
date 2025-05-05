@@ -12,26 +12,25 @@ export default async function authMiddleware(
     const token = req.header("Authorization")?.replace("Bearer ", "");
     
     if (!token) {
-      res.status(401).json({ error: "Требуется авторизация" });
+      res.status(401).json({ error: "Authorization required" });
       return;
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
     const user = await AppDataSource.getRepository(User).findOne({ 
       where: { id: decoded.id },
-      select: ['id', 'email', 'role'] // Важно: выбираем роль
+      relations: ['emailVerificationTokens', 'resetTokens'] // Добавляем нужные связи
     });
 
     if (!user) {
-      res.status(401).json({ error: "Пользователь не найден" });
+      res.status(401).json({ error: "User not found" });
       return;
     }
 
-    // Добавляем пользователя в запрос
-    req.user = user;
+    req.user = user; // Присваиваем полный объект пользователя
     next();
   } catch (error) {
     console.error("Auth middleware error:", error);
-    res.status(401).json({ error: "Неверный токен" });
+    res.status(401).json({ error: "Invalid token" });
   }
 }

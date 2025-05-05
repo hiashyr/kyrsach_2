@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
 import { PasswordResetToken } from "./PasswordResetTokens";
 import { EmailVerificationToken } from "./EmailVerificationToken";
+import { TestAttempt } from './TestAttempt';
 
 @Entity("users")
 export class User {
@@ -48,6 +49,9 @@ export class User {
 
   @OneToMany(() => EmailVerificationToken, (token) => token.user)
   emailVerificationTokens!: EmailVerificationToken[];
+
+  @OneToMany(() => TestAttempt, attempt => attempt.user, { cascade: true })
+  testAttempts!: TestAttempt[];
 
   // Упрощенный метод сравнения паролей
   async comparePassword(password: string): Promise<boolean> {
