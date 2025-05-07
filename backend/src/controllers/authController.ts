@@ -1,4 +1,3 @@
-// src/controllers/authController.ts
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
 import { User } from '../entities/User';
@@ -22,27 +21,31 @@ export const forgotPassword = async (
     if (!user) {
       res.status(200).json({ 
         success: true,
-        message: "Если email существует, письмо отправлено" 
+        emailExists: false, // Явно указываем что email не существует
+        message: "Email не найден в системе"
       });
-      return; // Просто return без значения
+      return;
     }
 
-    // Остальной код без изменений
+    // Удаляем старые токены
     await resetTokenRepository.delete({ user: { id: user.id } });
 
+    // Создаем новый токен
     const token = crypto.randomBytes(32).toString('hex');
     await resetTokenRepository.save({
       user,
       token,
-      expiresAt: new Date(Date.now() + 3600000),
+      expiresAt: new Date(Date.now() + 3600000), // 1 час
       isUsed: false
     });
 
+    // Отправляем письмо
     await sendPasswordResetEmail(user.email, token);
 
     res.json({ 
       success: true,
-      message: "Письмо с инструкциями отправлено" 
+      emailExists: true, // Явно указываем что email существует
+      message: "Письмо с инструкциями отправлено"
     });
   } catch (error) {
     console.error('Forgot password error:', error);
@@ -169,6 +172,29 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       message: "Ошибка сервера при сбросе пароля"
     });
   }
+};
+
+export const checkToken = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  
+  const resetToken = await resetTokenRepository.findOne({ 
+    where: { token },
+    relations: ['user']
+  });
+
+  if (!resetToken) {
+    return res.json({ status: 'invalid' });
+  }
+
+  if (resetToken.isUsed) {
+    return res.json({ status: 'used' });
+  }
+
+  if (resetToken.expiresAt < new Date()) {
+    return res.json({ status: 'expired' });
+  }
+
+  res.json({ status: 'valid' });
 };
 
 export const verifyEmail = async (req: Request, res: Response) => {
