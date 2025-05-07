@@ -113,33 +113,44 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
   try {
     const { token, newPassword } = req.body;
     
-    // Валидация
     if (!token || !newPassword) {
       res.status(400).json({ 
-        success: false,
-        error: "Токен и новый пароль обязательны" 
+        error: "MISSING_DATA",
+        message: "Токен и новый пароль обязательны" 
       });
       return;
     }
 
-    // Проверяем токен
     const resetToken = await resetTokenRepository.findOne({
-      where: { 
-        token, 
-        isUsed: false 
-      },
+      where: { token },
       relations: ['user'],
     });
 
-    if (!resetToken || resetToken.expiresAt < new Date()) {
-      res.status(400).json({ 
-        success: false,
-        error: "Недействительный или просроченный токен" 
+    if (!resetToken) {
+      res.status(400).json({
+        error: "INVALID_TOKEN",
+        message: "Недействительная ссылка для сброса пароля"
       });
       return;
     }
 
-    // Обновляем пароль (хеширование произойдет в @BeforeUpdate)
+    if (resetToken.expiresAt < new Date()) {
+      res.status(400).json({
+        error: "TOKEN_EXPIRED",
+        message: "Срок действия ссылки истёк. Запросите новую."
+      });
+      return;
+    }
+
+    if (resetToken.isUsed) {
+      res.status(400).json({
+        error: "TOKEN_ALREADY_USED",
+        message: "Эта ссылка уже была использована. Ваш пароль был изменён ранее."
+      });
+      return;
+    }
+
+    // Обновление пароля
     resetToken.user.password_hash = newPassword;
     await userRepository.save(resetToken.user);
 
@@ -149,16 +160,13 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
 
     res.json({ 
       success: true,
-      message: "Пароль успешно обновлен" 
+      message: "Пароль успешно обновлён" 
     });
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({
-      success: false,
-      error: "Ошибка сервера",
-      ...(process.env.NODE_ENV === 'development' && { 
-        details: error instanceof Error ? error.message : 'Unknown error' 
-      })
+      error: "SERVER_ERROR",
+      message: "Ошибка сервера при сбросе пароля"
     });
   }
 };

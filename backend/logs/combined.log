@@ -242,3 +242,27 @@
 {"level":"info","message":"File received","mimetype":"image/jpeg","originalname":"oxy.jpg","size":9684,"timestamp":"2025-05-05 01:37:20"}
 {"avatarUrl":"/api/uploads/avatars/c9bbff26c26c96ce47e6bb11e89b56e8.jpg","level":"info","message":"Updating user avatar","timestamp":"2025-05-05 01:37:20","userId":10}
 {"avatarUrl":"/api/uploads/avatars/c9bbff26c26c96ce47e6bb11e89b56e8.jpg","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-05 01:37:20"}
+{"email":"2qyuguwg44@qzueos.com","level":"info","message":"Creating new user","timestamp":"2025-05-07 20:41:38"}
+{"createdAt":"2025-05-07T17:41:38.287Z","level":"info","message":"User created successfully","timestamp":"2025-05-07 20:41:38","userId":21}
+{"expiresAt":"2025-05-08T17:41:38.300Z","level":"info","message":"Verification token created","timestamp":"2025-05-07 20:41:38","token":"40cd3adc1506c01c035bee481c6b13f44d9b0c2894dee34ba2636b347c133708","userId":21}
+{"level":"info","message":"Email successfully sent to 2qyuguwg44@qzueos.com","timestamp":"2025-05-07 20:41:40"}
+{"level":"info","message":"Email successfully sent to shlimakovvvova@gmail.com","timestamp":"2025-05-07 21:05:05"}
+{"level":"info","message":"Email successfully sent to shlimakovv@mail.ru","timestamp":"2025-05-07 21:19:46"}
+{"level":"info","message":"Upload avatar started","timestamp":"2025-05-07 21:20:49","userId":1}
+{"level":"info","message":"File received","mimetype":"image/png","originalname":"basic.png","size":18899,"timestamp":"2025-05-07 21:20:49"}
+{"avatarUrl":"/api/uploads/avatars/8a9afbda01ea1e4c577ed9a3df8aaf3b.png","level":"info","message":"Updating user avatar","timestamp":"2025-05-07 21:20:49","userId":1}
+{"avatarUrl":"/api/uploads/avatars/8a9afbda01ea1e4c577ed9a3df8aaf3b.png","level":"info","message":"Avatar updated successfully","timestamp":"2025-05-07 21:20:49"}
+{"email":"mq0x6l76by@bltiwd.com","level":"info","message":"Creating new user","timestamp":"2025-05-07 22:00:31"}
+{"createdAt":"2025-05-07T19:00:31.685Z","level":"info","message":"User created successfully","timestamp":"2025-05-07 22:00:31","userId":22}
+{"expiresAt":"2025-05-08T19:00:31.715Z","level":"info","message":"Verification token created","timestamp":"2025-05-07 22:00:31","token":"480c569222e00a08d5c9b1d87dff7bf33203485b23ba36c2d605d92ca8825604","userId":22}
+{"level":"info","message":"Email successfully sent to mq0x6l76by@bltiwd.com","timestamp":"2025-05-07 22:00:33"}
+{"email":"4dyyrgtgm2@daouse.com","level":"info","message":"Creating new user","timestamp":"2025-05-07 22:02:38"}
+{"createdAt":"2025-05-07T19:02:38.020Z","level":"info","message":"User created successfully","timestamp":"2025-05-07 22:02:38","userId":23}
+{"expiresAt":"2025-05-08T19:02:38.025Z","level":"info","message":"Verification token created","timestamp":"2025-05-07 22:02:38","token":"fb066477acfd38af22fc007558875003d53da96df23a1f04d5b463c7f6d56011","userId":23}
+{"level":"info","message":"Email successfully sent to 4dyyrgtgm2@daouse.com","timestamp":"2025-05-07 22:02:39"}
+{"level":"info","message":"Email successfully sent to 4dyyrgtgm2@daouse.com","timestamp":"2025-05-07 22:14:35"}
+{"email":"06wk3oash7@jkotypc.com","level":"info","message":"Creating new user","timestamp":"2025-05-07 22:29:02"}
+{"createdAt":"2025-05-07T19:29:02.506Z","level":"info","message":"User created successfully","timestamp":"2025-05-07 22:29:02","userId":24}
+{"expiresAt":"2025-05-08T19:29:02.532Z","level":"info","message":"Verification token created","timestamp":"2025-05-07 22:29:02","token":"aaa667ad6b8f7b73769b5400882e40c82d77d29489c26b3de18e6843bac52a89","userId":24}
+{"level":"info","message":"Email successfully sent to 06wk3oash7@jkotypc.com","timestamp":"2025-05-07 22:29:04"}
+{"level":"info","message":"Email successfully sent to 06wk3oash7@jkotypc.com","timestamp":"2025-05-07 22:29:42"}

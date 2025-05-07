@@ -79,9 +79,12 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
 
 export const sendPasswordResetEmail = async (
   email: string, 
-  resetLink: string,
+  token: string, // Изменяем параметр с resetLink на token
   type: 'reset' | 'change' = 'reset'
 ) => {
+  // Формируем полную ссылку
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}&type=${type}`;
+  
   const subject = type === 'change' 
     ? 'Подтверждение смены пароля' 
     : 'Восстановление пароля';
