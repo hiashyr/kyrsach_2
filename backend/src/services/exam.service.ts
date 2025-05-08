@@ -128,112 +128,169 @@ class ExamService {
     }
   }
   async processAnswer(data: AnswerSubmission): Promise<AnswerResult> {
-    const { userId, attemptId, questionId, answerId } = data;
-    const attemptRepo = AppDataSource.getRepository(TestAttempt);
-    const answerRepo = AppDataSource.getRepository(Answer);
-    const userAnswerRepo = AppDataSource.getRepository(UserAnswer);
-  
+    // Валидация входящих данных
+    if (!data.attemptId || isNaN(Number(data.attemptId))) {
+      throw new Error('Неверный ID попытки тестирования');
+    }
+    
+    if (!data.questionId || isNaN(Number(data.questionId))) {
+      throw new Error('Неверный ID вопроса');
+    }
+    
+    if (!data.answerId || isNaN(Number(data.answerId))) {
+      throw new Error('Неверный ID ответа');
+    }
+    
+    if (!data.userId || isNaN(Number(data.userId))) {
+      throw new Error('Неверный ID пользователя');
+    }
+
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
-      // 1. Находим попытку тестирования
-      const attempt = await attemptRepo.findOne({
-        where: { id: attemptId, user: { id: userId } },
+      await queryRunner.startTransaction();
+
+      // 1. Получаем попытку с блокировкой для избежания конкурентного доступа
+      const attempt = await queryRunner.manager.findOne(TestAttempt, {
+        where: { 
+          id: Number(data.attemptId), 
+          user: { id: Number(data.userId) } 
+        },
+        lock: { mode: "pessimistic_write" }
       });
-  
-      if (!attempt) throw new Error('Attempt not found');
-  
-      // 2. Рассчитываем время, затраченное на вопрос
-      const timeSpent = attempt.startedAt 
-        ? Math.floor((new Date().getTime() - attempt.startedAt.getTime()) / 1000)
-        : 0;
-  
-      // 3. Находим ответ и проверяем его корректность
-      const answer = await answerRepo.findOne({
-        where: { id: answerId, question: { id: questionId } },
+      
+      if (!attempt) {
+        throw new Error(`Попытка тестирования ${data.attemptId} не найдена для пользователя ${data.userId}`);
+      }
+
+      // 2. Проверяем, что экзамен ещё не завершён
+      if (attempt.status !== 'in_progress') {
+        throw new Error('Экзамен уже завершён');
+      }
+
+      // 3. Получаем вопрос и ответ
+      const question = await queryRunner.manager.findOne(Question, {
+        where: { id: Number(data.questionId) }
       });
-  
-      if (!answer) throw new Error('Answer not found');
-  
-      const isCorrect = answer.isCorrect;
-  
+      
+      if (!question) {
+        throw new Error(`Вопрос ${data.questionId} не найден`);
+      }
+
+      const answer = await queryRunner.manager.findOne(Answer, {
+        where: { 
+          id: Number(data.answerId), 
+          question: { id: Number(data.questionId) } 
+        }
+      });
+      
+      if (!answer) {
+        throw new Error(`Ответ ${data.answerId} для вопроса ${data.questionId} не найден`);
+      }
+
       // 4. Сохраняем ответ пользователя
       const userAnswer = new UserAnswer();
       userAnswer.attempt = attempt;
-      userAnswer.question = { id: questionId } as Question;
-      userAnswer.answer = { id: answerId } as Answer;
-      userAnswer.isCorrect = isCorrect;
-      await userAnswerRepo.save(userAnswer);
-  
-      // 5. Обновляем статистику попытки
-      const updateData: Partial<TestAttempt> = {
-        timeSpentSeconds: attempt.timeSpentSeconds + timeSpent,
-        startedAt: new Date(),
-      };
-  
-      if (isCorrect) {
-        updateData.correctAnswers = (attempt.correctAnswers || 0) + 1;
-      } else {
-        updateData.incorrectAnswers = (attempt.incorrectAnswers || 0) + 1;
-      }
-  
-      // Явное обновление попытки
-      await attemptRepo.update(
-        { id: attemptId },
-        updateData
-      );
-  
-      // 6. Получаем обновленную попытку
-      const updatedAttempt = await attemptRepo.findOneBy({ id: attemptId });
-      if (!updatedAttempt) throw new Error('Failed to update attempt');
-  
-      // 7. Проверяем, нужны ли дополнительные вопросы
-      const requiresAdditional = 
-        updatedAttempt.incorrectAnswers === 1 || 
-        updatedAttempt.incorrectAnswers === 2;
-  
-      return {
-        isCorrect,
-        correctAnswerId: isCorrect ? null : answer.id,
-        currentStats: {
-          correct: updatedAttempt.correctAnswers,
-          incorrect: updatedAttempt.incorrectAnswers,
-        },
-        requiresAdditionalQuestions: requiresAdditional,
-      };
-    } catch (error) {
-      console.error('ExamService.processAnswer error:', error);
-      throw new Error('Failed to process answer: ' + (error instanceof Error ? error.message : 'Unknown error'));
-    }
-  }
-
-  async completeExam(attempt: TestAttempt): Promise<ExamResults | AdditionalQuestionsResult> {
-    try {
-      const errorCount = attempt.incorrectAnswers;
+      userAnswer.question = question;
+      userAnswer.answer = answer;
+      userAnswer.isCorrect = answer.isCorrect;
       
-      if (errorCount >= 3) {
-        await AppDataSource.getRepository(TestAttempt).update(attempt.id, {
-          status: 'failed',
-          completedAt: new Date()
-        });
-        return this.getExamResults(attempt.id, attempt.user.id);
-      }
+      await queryRunner.manager.save(userAnswer);
 
-      if (errorCount > 0 && attempt.additionalQuestionsAnswered === 0) {
-        const result = await this.getAdditionalQuestions(attempt.id, errorCount, attempt.user.id);
-        return {
-          status: 'additional_required',
-          questions: result.questions
-        };
-      }
-
-      await AppDataSource.getRepository(TestAttempt).update(attempt.id, {
-        status: 'passed',
-        completedAt: new Date()
+      // 5. Пересчитываем статистику
+      const userAnswers = await queryRunner.manager.find(UserAnswer, {
+        where: { attempt: { id: attempt.id } }
       });
 
-      return this.getExamResults(attempt.id, attempt.user.id);
+      const correctAnswers = userAnswers.filter(ua => ua.isCorrect).length;
+      const incorrectAnswers = userAnswers.length - correctAnswers;
+
+      // 6. Подготавливаем данные для обновления
+      const updateData: Partial<TestAttempt> = {
+        correctAnswers,
+        incorrectAnswers
+      };
+
+      // Добавляем время выполнения, если начальное время валидно
+      if (attempt.startedAt && !isNaN(new Date(attempt.startedAt).getTime())) {
+        updateData.timeSpentSeconds = Math.floor(
+          (new Date().getTime() - new Date(attempt.startedAt).getTime()) / 1000
+        );
+      }
+
+      // 7. Обновляем попытку только если есть что обновлять
+      if (Object.keys(updateData).length > 0) {
+        await queryRunner.manager.update(
+          TestAttempt, 
+          attempt.id, 
+          updateData
+        );
+      }
+
+      await queryRunner.commitTransaction();
+
+      // 8. Возвращаем результат
+      return {
+        isCorrect: answer.isCorrect,
+        correctAnswerId: answer.isCorrect ? null : answer.id,
+        currentStats: { 
+          correct: correctAnswers, 
+          incorrect: incorrectAnswers 
+        },
+        requiresAdditionalQuestions: incorrectAnswers === 1 || incorrectAnswers === 2
+      };
+      
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      
+      console.error('Ошибка обработки ответа:', {
+        inputData: data,
+        error: error instanceof Error ? error.stack : error
+      });
+      
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  async completeExam(attempt: TestAttempt): Promise<ExamResults> {
+    try {
+      // Обновляем время выполнения
+      const timeSpent = attempt.startedAt 
+        ? Math.floor((new Date().getTime() - attempt.startedAt.getTime()) / 1000)
+        : 0;
+
+      // Определяем статус экзамена
+      const errorCount = attempt.incorrectAnswers || 0;
+      const status = errorCount >= 3 ? 'failed' : 'passed';
+
+      // Обновляем попытку
+      await AppDataSource.getRepository(TestAttempt).update(attempt.id, {
+        status,
+        completedAt: new Date(),
+        timeSpentSeconds: timeSpent
+      });
+
+      // Получаем обновленные данные
+      const updatedAttempt = await AppDataSource.getRepository(TestAttempt).findOneBy({ 
+        id: attempt.id 
+      });
+
+      if (!updatedAttempt) {
+        throw new Error('Attempt not found');
+      }
+
+      return {
+        status: updatedAttempt.status,
+        correctAnswers: updatedAttempt.correctAnswers || 0,
+        incorrectAnswers: updatedAttempt.incorrectAnswers || 0,
+        timeSpent: updatedAttempt.timeSpentSeconds || 0,
+        results: await this.getDetailedResults(attempt.id)
+      };
     } catch (error) {
       console.error('ExamService.completeExam error:', error);
-      throw new Error('Failed to complete exam: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      throw error;
     }
   }
 
@@ -333,37 +390,25 @@ class ExamService {
         order: { createdAt: 'ASC' }
       });
 
-    const questionIds = userAnswers.map(ua => ua.question.id);
-    const correctAnswers = await AppDataSource.getRepository(Answer)
-      .find({
-        where: { 
-          question: { id: In(questionIds) },
-          isCorrect: true 
-        },
-        relations: ['question']
-      });
-
-    const correctAnswersMap = new Map(
-      correctAnswers.map(ca => [ca.question.id, ca])
-    );
-
-    return userAnswers.map((answer, index) => {
-      const correctAnswer = correctAnswersMap.get(answer.question.id);
-      const timeSpent = index > 0 
-        ? Math.floor((answer.createdAt.getTime() - userAnswers[index - 1].createdAt.getTime()) / 1000)
-        : 0;
+    return Promise.all(userAnswers.map(async (ua) => {
+      const correctAnswer = await AppDataSource.getRepository(Answer)
+        .findOne({
+          where: { 
+            question: { id: ua.question.id },
+            isCorrect: true 
+          }
+        });
 
       return {
-        questionId: answer.question.id,
-        questionText: answer.question.text,
-        userAnswerId: answer.answer.id,
-        userAnswerText: answer.answer.text,
-        isCorrect: answer.isCorrect,
+        questionId: ua.question.id,
+        questionText: ua.question.text,
+        userAnswerId: ua.answer.id,
+        userAnswerText: ua.answer.text,
+        isCorrect: ua.isCorrect,
         correctAnswerId: correctAnswer?.id,
-        correctAnswerText: correctAnswer?.text,
-        timeSpent,
+        correctAnswerText: correctAnswer?.text
       };
-    });
+    }));
   }
 }
 

@@ -33,37 +33,45 @@ class ExamController {
 
       const { attemptId, questionId, answerId } = req.body;
       
+      // Строгая проверка attemptId
+      if (!attemptId || isNaN(Number(attemptId))) {
+        throw new Error('Invalid attempt ID');
+      }
+
       const result = await ExamService.processAnswer({
         userId: req.user.id,
-        attemptId,
+        attemptId: Number(attemptId), // Явное преобразование
         questionId,
         answerId
       });
 
       res.json(result);
     } catch (error) {
-      console.error('Answer submission error:', error);
+      console.error('Answer submission error:', {
+        body: req.body,
+        error: error instanceof Error ? error.stack : error
+      });
       res.status(500).json({
         error: 'Answer submission failed',
-        ...(process.env.NODE_ENV !== 'production' && {
-          details: error instanceof Error ? error.message : 'Unknown error'
-        })
+        details: process.env.NODE_ENV !== 'production'
+          ? (error instanceof Error ? error.message : 'Unknown error')
+          : undefined
       });
     }
   }
 
   async finishExam(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({ error: 'User not authenticated' });
+      const { attemptId } = req.params;
+      
+      if (!attemptId || isNaN(Number(attemptId))) {
+        res.status(400).json({ error: 'Invalid attempt ID' });
         return;
       }
 
-      const { attemptId } = req.params;
       const attemptRepository = AppDataSource.getRepository(TestAttempt);
-      
       const attempt = await attemptRepository.findOne({
-        where: { id: Number(attemptId), user: { id: req.user.id } },
+        where: { id: Number(attemptId) },
         relations: ['user']
       });
 
@@ -74,12 +82,19 @@ class ExamController {
 
       const result = await ExamService.completeExam(attempt);
       res.json(result);
-    } catch (error) {
+      
+    } catch (error: unknown) {
       console.error('Exam completion error:', error);
-      res.status(500).json({
-        error: 'Exam completion failed',
+      
+      let errorMessage = 'Exam completion failed';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      res.status(500).json({ 
+        error: errorMessage,
         ...(process.env.NODE_ENV !== 'production' && {
-          details: error instanceof Error ? error.message : 'Unknown error'
+          stack: error instanceof Error ? error.stack : undefined
         })
       });
     }
