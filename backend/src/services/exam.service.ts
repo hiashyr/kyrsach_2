@@ -3,7 +3,7 @@ import { TestAttempt } from '../entities/TestAttempt';
 import { Question } from '../entities/Question';
 import { Answer } from '../entities/Answer';
 import { UserAnswer } from '../entities/UserAnswer';
-import { In } from 'typeorm';
+import { Not, IsNull } from 'typeorm';
 import { User } from '../entities/User';
 
 interface AnswerSubmission {
@@ -15,9 +15,11 @@ interface AnswerSubmission {
 
 interface ExamStartResult {
   attemptId: number;
-  questions: Array<Omit<Question, 'answers'> & {
-    answers: Array<Pick<Answer, 'id' | 'text'>>
-  }>;
+  questions: Array<
+    Omit<Question, 'answers'> & {
+      answers: Array<Pick<Answer, 'id' | 'text'>>;
+    }
+  >;
 }
 
 interface AnswerResult {
@@ -55,77 +57,106 @@ interface DetailedResult {
   correctAnswerText?: string;
   timeSpent?: number;
 }
+interface UserStats {
+  overall: {
+    totalTests: number;
+    averageScore: number;
+    averageTime: number;
+  };
+  recent: TestAttempt[];
+  examStats: {
+    totalTests: number;
+    averageScore: number;
+    averageTime: number;
+    lastAttempt?: TestAttempt;
+  };
+}
 
 class ExamService {
+  private testAttemptsRepository = AppDataSource.getRepository(TestAttempt);
   async startExam(userId: number): Promise<ExamStartResult> {
-    try {
-      // Получаем репозиторий вопросов
-      const questionRepository = AppDataSource.getRepository(Question);
-      
-      // Получаем случайные ID вопросов
-      const randomQuestions = await questionRepository
-        .createQueryBuilder('question')
-        .select('question.id')
-        .orderBy('RANDOM()')
-        .limit(20)
-        .getMany();
-  
-      if (randomQuestions.length < 20) {
-        throw new Error(`Недостаточно вопросов. Получено: ${randomQuestions.length}, требуется: 20`);
+      const queryRunner = AppDataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+          await queryRunner.startTransaction();
+
+          // 1. Проверяем пользователя
+          const user = await queryRunner.manager.findOne(User, {
+              where: { id: userId },
+              select: ['id']
+          });
+          
+          if (!user) {
+              throw new Error('Пользователь не найден');
+          }
+
+          // 2. Получаем случайные вопросы в два этапа
+          // Сначала получаем ID случайных вопросов
+          const randomQuestionIds = await queryRunner.manager
+              .createQueryBuilder(Question, 'question')
+              .select('question.id')
+              .orderBy('RANDOM()')
+              .take(20)
+              .getRawMany(); // Используем getRawMany для простых ID
+
+          if (randomQuestionIds.length < 20) {
+              throw new Error(`Недостаточно вопросов. Получено: ${randomQuestionIds.length}, требуется: 20`);
+          }
+
+          // Затем получаем полные данные вопросов с ответами
+          const questions = await queryRunner.manager
+              .createQueryBuilder(Question, 'question')
+              .leftJoinAndSelect('question.answers', 'answers')
+              .where('question.id IN (:...ids)', { 
+                  ids: randomQuestionIds.map(q => q.question_id) 
+              })
+              .getMany();
+
+          // 3. Создаем попытку тестирования
+          const attempt = new TestAttempt();
+          attempt.user = user;
+          attempt.testType = 'exam';
+          attempt.status = 'in_progress';
+          attempt.totalQuestions = 20;
+          attempt.baseQuestionsCount = 20;
+          attempt.startedAt = new Date();
+          
+          const savedAttempt = await queryRunner.manager.save(attempt);
+
+          // 4. Форматируем вопросы
+          const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+          const defaultImage = `${baseUrl}/images/default-question.jpg`;
+
+          const formattedQuestions = questions.map(question => ({
+              id: question.id,
+              text: question.text,
+              imageUrl: question.imageUrl 
+                  ? `${baseUrl}/uploads/questions/${question.imageUrl}`
+                  : defaultImage,
+              topicId: question.topicId,
+              isHard: question.isHard,
+              createdAt: question.createdAt,
+              answers: question.answers.map(answer => ({
+                  id: answer.id,
+                  text: answer.text
+              }))
+          }));
+
+          await queryRunner.commitTransaction();
+
+          return {
+              attemptId: savedAttempt.id,
+              questions: formattedQuestions
+          };
+
+      } catch (error) {
+          await queryRunner.rollbackTransaction();
+          console.error('ExamService.startExam error:', error);
+          throw new Error(`Не удалось начать экзамен: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+      } finally {
+          await queryRunner.release();
       }
-  
-      // Получаем полные данные вопросов с ответами
-      const questions = await questionRepository
-        .createQueryBuilder('question')
-        .leftJoinAndSelect('question.answers', 'answers')
-        .where('question.id IN (:...ids)', { ids: randomQuestions.map(q => q.id) })
-        .getMany();
-  
-      // Получаем пользователя и проверяем его существование
-      const userRepository = AppDataSource.getRepository(User);
-      const user = await userRepository.findOneBy({ id: userId });
-      
-      if (!user) {
-        throw new Error('Пользователь не найден');
-      }
-  
-      // Создаем и сохраняем попытку
-      const attempt = new TestAttempt();
-      attempt.user = user;
-      attempt.testType = 'exam';
-      attempt.status = 'in_progress';
-      attempt.totalQuestions = 20;
-      attempt.correctAnswers = 0;
-      attempt.incorrectAnswers = 0;
-      attempt.baseQuestionsCount = 20;
-      attempt.additionalQuestionsAnswered = 0;
-      attempt.startedAt = new Date();
-      
-      const savedAttempt = await AppDataSource.getRepository(TestAttempt).save(attempt);
-  
-      // Типизированный маппинг вопросов
-      const formattedQuestions = questions.map((q: Question) => ({
-        id: q.id,
-        text: q.text,
-        imageUrl: q.imageUrl,
-        topicId: q.topicId,
-        isHard: q.isHard,
-        createdAt: q.createdAt,
-        definedAt: q.definedAt,
-        answers: q.answers.map((a: Answer) => ({
-          id: a.id,
-          text: a.text
-        }))
-      }));
-  
-      return {
-        attemptId: savedAttempt.id,
-        questions: formattedQuestions
-      };
-    } catch (error) {
-      console.error('ExamService.startExam error:', error);
-      throw new Error('Failed to start exam: ' + (error instanceof Error ? error.message : 'Unknown error'));
-    }
   }
   async processAnswer(data: AnswerSubmission): Promise<AnswerResult> {
     // Валидация входящих данных
@@ -292,6 +323,40 @@ class ExamService {
       console.error('ExamService.completeExam error:', error);
       throw error;
     }
+  }
+
+  async getUserStats(userId: number): Promise<UserStats> {
+    const attempts = await this.testAttemptsRepository.find({
+      where: { user: { id: userId }, completedAt: Not(IsNull()) },
+      order: { completedAt: 'DESC' }
+    });
+
+    return {
+      overall: this.calculateOverallStats(attempts),
+      recent: attempts.slice(0, 20),
+      examStats: this.calculateExamStats(attempts)
+    };
+  }
+
+  private calculateOverallStats(attempts: TestAttempt[]) {
+    const totalCorrect = attempts.reduce((sum, a) => sum + a.correctAnswers, 0);
+    const totalQuestions = attempts.reduce((sum, a) => sum + a.totalQuestions, 0);
+    
+    return {
+      totalTests: attempts.length,
+      averageScore: totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0,
+      averageTime: Math.round(attempts.reduce((sum, a) => sum + a.timeSpentSeconds, 0) / attempts.length) || 0
+    };
+  }
+
+  private calculateExamStats(attempts: TestAttempt[]) {
+    const exams = attempts.filter(a => a.testType === 'exam');
+    const stats = this.calculateOverallStats(exams);
+    
+    return {
+      ...stats,
+      lastAttempt: exams[0]
+    };
   }
 
   private async getAdditionalQuestions(attemptId: number, errorCount: number, userId: number): Promise<AdditionalQuestionsResult> {

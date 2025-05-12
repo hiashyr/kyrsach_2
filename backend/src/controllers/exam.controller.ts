@@ -161,6 +161,28 @@ class ExamController {
       });
     }
   }
+
+  async getUserStats(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: 'User not authenticated' });
+      return;
+    }
+
+    const stats = await ExamService.getUserStats(req.user.id);
+    res.json(stats);
+    
+  } catch (error) {
+    console.error('Get user stats error:', error);
+    res.status(500).json({
+      error: 'Failed to get user stats',
+      ...(process.env.NODE_ENV !== 'production' && {
+        details: error instanceof Error ? error.message : 'Unknown error'
+      })
+    });
+  }
 }
+}
+
 
 export default new ExamController();

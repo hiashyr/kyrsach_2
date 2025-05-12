@@ -275,3 +275,11 @@
 {"createdAt":"2025-05-07T21:36:04.290Z","level":"info","message":"User created successfully","timestamp":"2025-05-08 00:36:04","userId":26}
 {"expiresAt":"2025-05-08T21:36:04.329Z","level":"info","message":"Verification token created","timestamp":"2025-05-08 00:36:04","token":"28d80d9481785317d52fa62e7c2b40173c998529937cc90f283f32627b690d3e","userId":26}
 {"level":"info","message":"Email successfully sent to x8rl3gb6m5@dygovil.com","timestamp":"2025-05-08 00:36:06"}
+{"email":"x8rl3gb6m5@dygovil.com","level":"info","message":"Creating new user","timestamp":"2025-05-12 21:19:42"}
+{"createdAt":"2025-05-12T18:19:42.304Z","level":"info","message":"User created successfully","timestamp":"2025-05-12 21:19:42","userId":27}
+{"expiresAt":"2025-05-13T18:19:42.320Z","level":"info","message":"Verification token created","timestamp":"2025-05-12 21:19:42","token":"b18caa3d1855e4bab0e4b17c9bb012708fa910be0da64b121df3cd854de98b45","userId":27}
+{"level":"info","message":"Email successfully sent to x8rl3gb6m5@dygovil.com","timestamp":"2025-05-12 21:19:45"}
+{"email":"saw2lh4qvv@cmhvzylmfc.com","level":"info","message":"Creating new user","timestamp":"2025-05-12 21:20:23"}
+{"createdAt":"2025-05-12T18:20:23.639Z","level":"info","message":"User created successfully","timestamp":"2025-05-12 21:20:23","userId":28}
+{"expiresAt":"2025-05-13T18:20:23.646Z","level":"info","message":"Verification token created","timestamp":"2025-05-12 21:20:23","token":"04a90d05d6d56480bedeac265f7f33aa479c3cc33c4dad86f9e01ddf2371bd45","userId":28}
+{"level":"info","message":"Email successfully sent to saw2lh4qvv@cmhvzylmfc.com","timestamp":"2025-05-12 21:20:25"}

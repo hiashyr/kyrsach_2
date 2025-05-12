@@ -5,21 +5,19 @@ import {
   getCurrentUser, 
   getUsers,
   getAdminStats,
-  uploadAvatar, 
+  uploadAvatar as uploadAvatarHandler, // Переименовываем импорт
   changePassword
 } from '../controllers/userController';
 import authMiddleware from '../middlewares/authMiddleware';
-import { upload } from '../config/multer';
+import { uploadAvatar } from '../config/multer'; // Middleware для загрузки
 import { User } from '../entities/User';
 
 const router = Router();
 
-// Расширенный тип Request с пользователем
 interface AuthenticatedRequest extends Request {
   user?: User;
 }
 
-// Универсальный asyncHandler с правильной типизацией
 const asyncHandler = <T extends Request>(
   fn: (req: T, res: Response, next?: NextFunction) => Promise<Response | void>
 ) => (req: T, res: Response, next: NextFunction) => {
@@ -38,12 +36,12 @@ router.post(
   asyncHandler<AuthenticatedRequest>(changePassword)
 );
 
-// Avatar upload
+// Avatar upload - используем переименованный обработчик
 router.post(
   '/upload-avatar',
   authMiddleware,
-  upload.single('avatar'),
-  asyncHandler<AuthenticatedRequest & { file?: Express.Multer.File }>(uploadAvatar)
+  uploadAvatar.single('avatar'),
+  asyncHandler<AuthenticatedRequest & { file?: Express.Multer.File }>(uploadAvatarHandler) // Используем новое имя
 );
 
 // Admin routes

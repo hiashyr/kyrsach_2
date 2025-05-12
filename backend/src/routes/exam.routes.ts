@@ -14,6 +14,8 @@ router.post('/:attemptId/answer', authMiddleware, (req, res, next) => {
   ExamController.submitAnswer(req, res).catch(next);
 });
 
+router.get('/stats', authMiddleware, ExamController.getUserStats);
+
 // Завершение экзамена
 router.post('/:attemptId/finish', authMiddleware, (req, res, next) => {
   ExamController.finishExam(req, res).catch(next);

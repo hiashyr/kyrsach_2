@@ -4,104 +4,82 @@ import { AppDataSource } from "./config/data-source";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
-import path from "path"; // Добавлен импорт path
 import examRoutes from './routes/exam.routes';
+import questionRoutes from './routes/question.routes'; // Добавляем новый роут
+import path from "path";
+import fs from "fs"; // Для создания папок
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Проверка обязательных переменных окружения
-if (!process.env.JWT_SECRET) {
-  console.error("❌ FATAL ERROR: JWT_SECRET не установлен в .env");
+// Проверка обязательных переменных
+if (!process.env.JWT_SECRET || !process.env.FRONTEND_URL) {
+  console.error("❌ Ошибка: Отсутствуют обязательные переменные в .env");
   process.exit(1);
 }
 
 // Middleware
-app.use(cors({ 
+app.use(cors({
   origin: process.env.FRONTEND_URL,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-  exposedHeaders: ['Content-Disposition'] // Добавьте если нужно
+  credentials: true
 }));
 app.use(express.json());
 
-// Добавлено: Middleware для обслуживания статических файлов
-app.use('/api/uploads', express.static(path.join(__dirname, '../uploads'), {
-  setHeaders: (res) => {
-    res.set('Cache-Control', 'no-store');
-  }
-}));
+// Создаем папки для загрузок если их нет
+const uploadDirs = [
+  path.join(__dirname, '../uploads/avatars'),
+  path.join(__dirname, '../uploads/questions')
+];
 
-// Логирование входящих запросов (для отладки)
+uploadDirs.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
+// Статические файлы
+app.use('/uploads/avatars', express.static(uploadDirs[0]));
+app.use('/uploads/questions', express.static(uploadDirs[1]));
+
+// Логирование запросов
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
   next();
 });
 
-// Подключение роутов
+// Роуты
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/exam", examRoutes);
+app.use("/api/questions", questionRoutes); // Подключаем роуты вопросов
 
-app.use('/api/exam', examRoutes);
-
-// Health check endpoint
+// Health check
 app.get("/", (req, res) => {
   res.json({ 
     status: "OK",
-    message: "Backend работает!",
-    endpoints: {
-      users: "/api/users",
-      auth: "/api/auth",
-      forgot_password: "POST /api/auth/forgot-password",
-      upload_avatar: "POST /api/users/upload-avatar" // Добавлен новый эндпоинт
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Обработчик 404 (должен быть ПОСЛЕДНИМ)
-app.use((req, res) => {
-  console.error(`⚠️ 404 Not Found: ${req.method} ${req.path}`);
-  res.status(404).json({ 
-    error: "Endpoint не найден",
-    available_endpoints: {
-      users: "/api/users",
-      auth: "/api/auth"
+    message: "Сервер работает",
+    uploads: {
+      avatars: "/uploads/avatars",
+      questions: "/uploads/questions"
     }
   });
 });
 
-// Инициализация БД и сервера
+// Обработка 404
+app.use((req, res) => {
+  res.status(404).json({ error: "Маршрут не найден" });
+});
+
+// Инициализация
 AppDataSource.initialize()
   .then(() => {
-    console.log("✅ Database connected");
+    console.log("✅ База данных подключена");
     app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
-      console.log("🔑 JWT секрет:", process.env.JWT_SECRET ? "установлен" : "отсутствует");
-      console.log("🛣️ Доступные эндпоинты:");
-      
-      // Аутентификация
-      console.log("  🔐 Аутентификация:");
-      console.log("    - POST   /api/auth/forgot-password");
-      console.log("    - POST   /api/auth/reset-password");
-      console.log("    - GET    /api/auth/verify-email");
-      console.log("    - POST   /api/auth/verify-email");
-      console.log("    - POST   /api/auth/resend-verification");
-      
-      // Пользователи
-      console.log("  👥 Пользователи:");
-      console.log("    - POST   /api/users/register");
-      console.log("    - POST   /api/users/login");
-      console.log("    - GET    /api/users/me (требуется аутентификация)");
-      console.log("    - GET    /api/users (только для админов)");
-      console.log("    - GET    /api/users/admin-stats (только для админов)");
-      
-      // Health check
-      console.log("  🩺 Проверка состояния:");
-      console.log("    - GET    /");
+      console.log(`🚀 Сервер запущен на порту ${PORT}`);
+      console.log(`📁 Папки загрузок созданы: ${uploadDirs.join(', ')}`);
     });
   })
-  .catch((err) => {
-    console.error("❌ Database connection error:", err);
+  .catch(error => {
+    console.error("❌ Ошибка подключения к БД:", error);
     process.exit(1);
   });
