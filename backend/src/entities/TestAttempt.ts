@@ -68,7 +68,8 @@ export class TestAttempt {
 
   @Column({ 
     name: 'base_questions_count',
-    type: 'integer' 
+    type: 'integer',
+    default: 20
   })
   baseQuestionsCount!: number;
 

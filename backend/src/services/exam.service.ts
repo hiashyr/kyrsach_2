@@ -15,11 +15,35 @@ interface AnswerSubmission {
 
 interface ExamStartResult {
   attemptId: number;
-  questions: Array<
-    Omit<Question, 'answers'> & {
-      answers: Array<Pick<Answer, 'id' | 'text'>>;
-    }
-  >;
+  questions: Array<{
+    id: number;
+    text: string;
+    imageUrl: string;
+    topicId: number;
+    isHard: boolean;
+    createdAt: Date;
+    answers: Array<{
+      id: number;
+      text: string;
+    }>;
+  }>;
+}
+
+interface AdditionalQuestionsResult {
+  status: 'additional_required';
+  questions: Array<{
+    id: number;
+    text: string;
+    imageUrl: string;
+    topicId: number;
+    isHard: boolean;
+    createdAt: Date;
+    answers: Array<{
+      id: number;
+      text: string;
+    }>;
+  }>;
+  timeLimit: number;
 }
 
 interface AnswerResult {
@@ -30,6 +54,8 @@ interface AnswerResult {
     incorrect: number;
   };
   requiresAdditionalQuestions?: boolean;
+  additionalQuestions?: AdditionalQuestionsResult; // Добавляем
+  timeLimit?: number;
 }
 
 interface ExamResults {
@@ -42,9 +68,19 @@ interface ExamResults {
 
 interface AdditionalQuestionsResult {
   status: 'additional_required';
-  questions: Array<Omit<Question, 'answers'> & {
-    answers: Array<Pick<Answer, 'id' | 'text'>>
+  questions: Array<{
+    id: number;
+    text: string;
+    imageUrl: string;
+    topicId: number;
+    isHard: boolean;
+    createdAt: Date;
+    answers: Array<{
+      id: number;
+      text: string;
+    }>;
   }>;
+  timeLimit: number;
 }
 
 interface DetailedResult {
@@ -131,20 +167,19 @@ class ExamService {
           const defaultImage = `${baseUrl}/uploads/questions/default-question.jpg`;
 
           const formattedQuestions = shuffledQuestions.map(question => ({
-              id: question.id,
-              text: question.text,
-              imageUrl: question.imageUrl 
-                  ? `${baseUrl}/uploads/questions/${question.imageUrl}`
-                  : defaultImage,
-              topicId: question.topicId,
-              isHard: question.isHard,
-              createdAt: question.createdAt,
-              answers: question.answers.map(answer => ({
-                  id: answer.id,
-                  text: answer.text
-              }))
+            id: question.id,
+            text: question.text,
+            imageUrl: question.imageUrl 
+              ? `${baseUrl}/uploads/questions/${question.imageUrl}`
+              : defaultImage,
+            topicId: question.topicId,
+            isHard: question.isHard,
+            createdAt: question.createdAt,
+            answers: question.answers.map(answer => ({
+              id: answer.id,
+              text: answer.text
+            }))
           }));
-
           await queryRunner.commitTransaction();
 
           return {
@@ -161,132 +196,157 @@ class ExamService {
       }
   }
   async processAnswer(data: AnswerSubmission): Promise<AnswerResult> {
-    // Валидация входящих данных
-    if (!data.attemptId || isNaN(Number(data.attemptId))) {
-      throw new Error('Неверный ID попытки тестирования');
-    }
-    
-    if (!data.questionId || isNaN(Number(data.questionId))) {
-      throw new Error('Неверный ID вопроса');
-    }
-    
-    if (!data.answerId || isNaN(Number(data.answerId))) {
-      throw new Error('Неверный ID ответа');
-    }
-    
-    if (!data.userId || isNaN(Number(data.userId))) {
-      throw new Error('Неверный ID пользователя');
-    }
+      // Валидация входящих данных
+      if (!data.attemptId || isNaN(Number(data.attemptId))) {
+          throw new Error('Неверный ID попытки тестирования');
+      }
+      
+      if (!data.questionId || isNaN(Number(data.questionId))) {
+          throw new Error('Неверный ID вопроса');
+      }
+      
+      if (!data.answerId || isNaN(Number(data.answerId))) {
+          throw new Error('Неверный ID ответа');
+      }
+      
+      if (!data.userId || isNaN(Number(data.userId))) {
+          throw new Error('Неверный ID пользователя');
+      }
 
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
 
     try {
-      await queryRunner.startTransaction();
+        await queryRunner.startTransaction();
 
-      // 1. Получаем попытку с блокировкой для избежания конкурентного доступа
-      const attempt = await queryRunner.manager.findOne(TestAttempt, {
-        where: { 
-          id: Number(data.attemptId), 
-          user: { id: Number(data.userId) } 
-        },
-        lock: { mode: "pessimistic_write" }
-      });
-      
-      if (!attempt) {
-        throw new Error(`Попытка тестирования ${data.attemptId} не найдена для пользователя ${data.userId}`);
-      }
-
-      // 2. Проверяем, что экзамен ещё не завершён
-      if (attempt.status !== 'in_progress') {
-        throw new Error('Экзамен уже завершён');
-      }
-
-      // 3. Получаем вопрос и ответ
-      const question = await queryRunner.manager.findOne(Question, {
-        where: { id: Number(data.questionId) }
-      });
-      
-      if (!question) {
-        throw new Error(`Вопрос ${data.questionId} не найден`);
-      }
-
-      const answer = await queryRunner.manager.findOne(Answer, {
-        where: { 
-          id: Number(data.answerId), 
-          question: { id: Number(data.questionId) } 
+        // 1. Получаем попытку с блокировкой (без JOIN)
+        const attempt = await queryRunner.manager.findOne(TestAttempt, {
+            where: { 
+                id: Number(data.attemptId), 
+                user: { id: Number(data.userId) } 
+            },
+            lock: { mode: "pessimistic_write" }
+        });
+        
+        if (!attempt) {
+            throw new Error(`Попытка тестирования ${data.attemptId} не найдена`);
         }
-      });
-      
-      if (!answer) {
-        throw new Error(`Ответ ${data.answerId} для вопроса ${data.questionId} не найден`);
-      }
 
-      // 4. Сохраняем ответ пользователя
-      const userAnswer = new UserAnswer();
-      userAnswer.attempt = attempt;
-      userAnswer.question = question;
-      userAnswer.answer = answer;
-      userAnswer.isCorrect = answer.isCorrect;
-      
-      await queryRunner.manager.save(userAnswer);
+        // 2. Проверяем статус экзамена
+        if (attempt.status !== 'in_progress') {
+            throw new Error('Экзамен уже завершён');
+        }
 
-      // 5. Пересчитываем статистику
-      const userAnswers = await queryRunner.manager.find(UserAnswer, {
-        where: { attempt: { id: attempt.id } }
-      });
+        // 3. Получаем вопрос и ответ
+        const [question, answer, userAnswers] = await Promise.all([
+            queryRunner.manager.findOne(Question, {
+                where: { id: Number(data.questionId) }
+            }),
+            queryRunner.manager.findOne(Answer, {
+                where: { 
+                    id: Number(data.answerId),
+                    question: { id: Number(data.questionId) } 
+                }
+            }),
+            queryRunner.manager.find(UserAnswer, {
+                where: { attempt: { id: attempt.id } },
+                relations: ['question']
+            })
+        ]);
 
-      const correctAnswers = userAnswers.filter(ua => ua.isCorrect).length;
-      const incorrectAnswers = userAnswers.length - correctAnswers;
+        if (!question) throw new Error(`Вопрос ${data.questionId} не найден`);
+        if (!answer) throw new Error(`Ответ ${data.answerId} не найден`);
 
-      // 6. Подготавливаем данные для обновления
-      const updateData: Partial<TestAttempt> = {
-        correctAnswers,
-        incorrectAnswers
-      };
+        // 4. Сохраняем ответ пользователя
+        const userAnswer = new UserAnswer();
+        userAnswer.attempt = attempt;
+        userAnswer.question = question;
+        userAnswer.answer = answer;
+        userAnswer.isCorrect = answer.isCorrect;
+        
+        await queryRunner.manager.save(userAnswer);
 
-      // Добавляем время выполнения, если начальное время валидно
-      if (attempt.startedAt && !isNaN(new Date(attempt.startedAt).getTime())) {
-        updateData.timeSpentSeconds = Math.floor(
-          (new Date().getTime() - new Date(attempt.startedAt).getTime()) / 1000
-        );
-      }
+        // 5. Получаем обновленную статистику
+        const correctAnswers = userAnswers.filter(ua => ua.isCorrect).length + (answer.isCorrect ? 1 : 0);
+        const incorrectAnswers = userAnswers.length + 1 - correctAnswers;
+        const totalAnswered = userAnswers.length + 1;
 
-      // 7. Обновляем попытку только если есть что обновлять
-      if (Object.keys(updateData).length > 0) {
-        await queryRunner.manager.update(
-          TestAttempt, 
-          attempt.id, 
-          updateData
-        );
-      }
+        // 6. Проверяем необходимость дополнительных вопросов
+        const requiresAdditional = (incorrectAnswers === 1 || incorrectAnswers === 2) && 
+                                 totalAnswered === attempt.baseQuestionsCount;
 
-      await queryRunner.commitTransaction();
+        let additionalQuestions: AdditionalQuestionsResult | null = null;
+        
+        if (requiresAdditional) {
+            const additionalCount = incorrectAnswers === 1 ? 5 : 10;
+            
+            // Получаем ID уже отвеченных вопросов
+            const answeredIds = userAnswers.map(ua => ua.question.id);
+            answeredIds.push(question.id);
 
-      // 8. Возвращаем результат
-      return {
-        isCorrect: answer.isCorrect,
-        correctAnswerId: answer.isCorrect ? null : answer.id,
-        currentStats: { 
-          correct: correctAnswers, 
-          incorrect: incorrectAnswers 
-        },
-        requiresAdditionalQuestions: incorrectAnswers === 1 || incorrectAnswers === 2
-      };
-      
+            // Выбираем новые вопросы
+            const questions = await queryRunner.manager
+                .createQueryBuilder(Question, 'question')
+                .leftJoinAndSelect('question.answers', 'answers')
+                .where('question.id NOT IN (:...answeredIds)', { answeredIds })
+                .orderBy('RANDOM()')
+                .limit(additionalCount)
+                .getMany();
+
+            // Обновляем попытку
+            await queryRunner.manager.update(TestAttempt, attempt.id, {
+                additionalQuestionsAnswered: additionalCount,
+                totalQuestions: attempt.baseQuestionsCount + additionalCount
+            });
+
+            const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+            const defaultImage = `${baseUrl}/images/default-question.jpg`;
+
+            additionalQuestions = {
+                status: 'additional_required',
+                questions: questions.map(q => ({
+                    id: q.id,
+                    text: q.text,
+                    imageUrl: q.imageUrl ? `${baseUrl}/uploads/questions/${q.imageUrl}` : defaultImage,
+                    topicId: q.topicId,
+                    isHard: q.isHard,
+                    createdAt: q.createdAt,
+                    answers: q.answers.map(a => ({ id: a.id, text: a.text }))
+                })),
+                timeLimit: additionalCount * 60
+            };
+        }
+
+        // 7. Обновляем статистику попытки
+        const updateData: Partial<TestAttempt> = {
+            correctAnswers,
+            incorrectAnswers,
+            timeSpentSeconds: Math.floor(
+                (new Date().getTime() - new Date(attempt.startedAt as Date).getTime()) / 1000
+            )
+        };
+
+        await queryRunner.manager.update(TestAttempt, attempt.id, updateData);
+        await queryRunner.commitTransaction();
+
+        // 8. Формируем результат
+        return {
+            isCorrect: answer.isCorrect,
+            correctAnswerId: answer.isCorrect ? null : answer.id,
+            currentStats: { correct: correctAnswers, incorrect: incorrectAnswers },
+            requiresAdditionalQuestions: requiresAdditional,
+            ...(additionalQuestions && { additionalQuestions })
+        };
+        
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      
-      console.error('Ошибка обработки ответа:', {
-        inputData: data,
-        error: error instanceof Error ? error.stack : error
-      });
-      
-      throw error;
+        await queryRunner.rollbackTransaction();
+        console.error('Ошибка обработки ответа:', error);
+        throw error;
     } finally {
-      await queryRunner.release();
+        await queryRunner.release();
     }
-  }
+}
+
   async completeExam(attempt: TestAttempt): Promise<ExamResults> {
     try {
       // Обновляем время выполнения
@@ -327,6 +387,11 @@ class ExamService {
     }
   }
 
+  private calculateTimeLimit(attempt: TestAttempt): number {
+    // 1 минута на вопрос (60 секунд)
+    return attempt.totalQuestions * 60;
+  }
+
   async getUserStats(userId: number): Promise<UserStats> {
     const attempts = await this.testAttemptsRepository.find({
       where: { user: { id: userId }, completedAt: Not(IsNull()) },
@@ -361,52 +426,73 @@ class ExamService {
     };
   }
 
-  private async getAdditionalQuestions(attemptId: number, errorCount: number, userId: number): Promise<AdditionalQuestionsResult> {
+  private async getAdditionalQuestions(
+    attemptId: number, 
+    errorCount: number, 
+    userId: number
+  ): Promise<AdditionalQuestionsResult> {
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
+      await queryRunner.startTransaction();
+
       const additionalCount = errorCount === 1 ? 5 : 10;
       const answeredQuestions = await this.getAnsweredQuestionIds(attemptId);
 
-      const totalQuestions = await AppDataSource.getRepository(Question).count();
+      // Проверяем доступность вопросов
+      const totalQuestions = await queryRunner.manager.count(Question);
       if (totalQuestions - answeredQuestions.length < additionalCount) {
         throw new Error('Недостаточно вопросов для дополнительного тестирования');
       }
 
-      const questions = await AppDataSource.getRepository(Question)
-        .createQueryBuilder('question')
+      // Получаем новые вопросы
+      const questions = await queryRunner.manager
+        .createQueryBuilder(Question, 'question')
         .leftJoinAndSelect('question.answers', 'answers')
         .where('question.id NOT IN (:...answered)', { answered: answeredQuestions })
         .orderBy('RANDOM()')
         .limit(additionalCount)
         .getMany();
 
-      await AppDataSource.getRepository(TestAttempt).update(attemptId, {
+      // Обновляем попытку
+      await queryRunner.manager.update(TestAttempt, attemptId, {
         additionalQuestionsAnswered: additionalCount,
         totalQuestions: 20 + additionalCount,
         startedAt: new Date(),
       });
+
+      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const defaultImage = `${baseUrl}/images/default-question.jpg`;
+
+      await queryRunner.commitTransaction();
 
       return {
         status: 'additional_required',
         questions: questions.map(q => ({
           id: q.id,
           text: q.text,
-          imageUrl: q.imageUrl,
+          imageUrl: q.imageUrl ? `${baseUrl}/uploads/questions/${q.imageUrl}` : defaultImage,
           topicId: q.topicId,
           isHard: q.isHard,
           createdAt: q.createdAt,
-          definedAt: q.definedAt,
           answers: q.answers.map(a => ({
             id: a.id,
             text: a.text
           }))
-        }))
+        })),
+        timeLimit: additionalCount * 60 // 1 минута на вопрос
       };
+
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       console.error('ExamService.getAdditionalQuestions error:', error);
-      throw new Error('Failed to get additional questions: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      throw new Error('Failed to get additional questions: ' + 
+        (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
+      await queryRunner.release();
     }
   }
-
   async getExamResults(attemptId: number, userId: number): Promise<ExamResults> {
     try {
       const attempt = await AppDataSource.getRepository(TestAttempt).findOne({

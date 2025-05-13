@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { PasswordResetToken } from "./PasswordResetTokens";
 import { EmailVerificationToken } from "./EmailVerificationToken";
 import { TestAttempt } from './TestAttempt';
+import { TopicProgress } from "./TopicProgress";
 
 @Entity("users")
 export class User {
@@ -52,6 +53,9 @@ export class User {
 
   @OneToMany(() => TestAttempt, attempt => attempt.user, { cascade: true })
   testAttempts!: TestAttempt[];
+
+  @OneToMany(() => TopicProgress, progress => progress.user)
+  topicProgress!: TopicProgress[];
 
   // Упрощенный метод сравнения паролей
   async comparePassword(password: string): Promise<boolean> {

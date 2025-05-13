@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
 import examRoutes from './routes/exam.routes';
 import questionRoutes from './routes/question.routes'; // Добавляем новый роут
+import topicRoutes from './routes/topic.routes'; // Добавляем этот импорт
 import path from "path";
 import fs from "fs"; // Для создания папок
 
@@ -51,7 +52,8 @@ app.use((req, res, next) => {
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/exam", examRoutes);
-app.use("/api/questions", questionRoutes); // Подключаем роуты вопросов
+app.use("/api/questions", questionRoutes);
+app.use("/api/topics", topicRoutes);
 
 // Health check
 app.get("/", (req, res) => {
