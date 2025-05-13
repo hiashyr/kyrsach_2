@@ -57,14 +57,15 @@ class TopicService {
       ORDER BY t.id
     `, [userId]);
 
-    return result.map((topic: RawTopicWithProgress) => ({
-      ...topic,
-      correct_answers: topic.correct_answers || 0,
-      questions_answered: topic.questions_answered || 0,
-      questions_total: topic.questions_total || topic.questions_count
-    }));
-  }
-
+    return Array.isArray(result) 
+      ? result.map((topic: RawTopicWithProgress) => ({
+          ...topic,
+          correct_answers: topic.correct_answers || 0,
+          questions_answered: topic.questions_answered || 0,
+          questions_total: topic.questions_total || topic.questions_count
+        }))
+      : [];
+}
   private async ensureTopicExists(topicId: number): Promise<void> {
     const topic = await this.topicRepo.findOneBy({ id: topicId });
     if (!topic) {
@@ -144,55 +145,39 @@ class TopicService {
   }
 
   async getAttempt(topicId: number, attemptId: number, userId: number) {
-      const attemptExists = await this.attemptRepo.exist({
-        where: { 
-          id: attemptId,
-          user: { id: userId },
-          topicId 
-        }
-      });
+      console.log('Getting attempt:', { topicId, attemptId, userId });
       
-      if (!attemptExists) {
-        throw new Error('Попытка тестирования не найдена');
+      const attempt = await this.attemptRepo.findOne({
+          where: { 
+              id: attemptId, 
+              user: { id: userId }, 
+              topicId 
+          },
+          relations: ['userAnswers']
+      });
+
+      console.log('Found attempt:', attempt);
+
+      if (!attempt) {
+          throw new Error(`Attempt not found for ID: ${attemptId}`);
       }
-    // Дополнительная проверка параметров
-    if (isNaN(topicId) || isNaN(attemptId) || isNaN(userId)) {
-      throw new Error('Invalid parameters');
-    }
 
-    const attempt = await this.attemptRepo.findOne({
-      where: { 
-        id: attemptId, 
-        user: { id: userId }, 
-        topicId 
-      },
-      relations: ['userAnswers']
-    });
+      const questions = await this.getTopicQuestions(topicId);
+      console.log('Questions for topic:', questions);
 
-    if (!attempt) {
-      throw new Error(`Attempt not found for ID: ${attemptId}`);
-    }
+      const topic = await this.topicRepo.findOneBy({ id: topicId });
+      console.log('Topic:', topic);
 
-    const questions = await this.getTopicQuestions(topicId);
-    const topic = await this.topicRepo.findOneBy({ id: topicId });
-
-    return {
-      attemptId: attempt.id,
-      topicId,
-      topicName: topic?.name || '',
-      questions: questions.map(q => ({
-        id: q.id,
-        text: q.text,
-        imageUrl: q.imageUrl ? 
-          `${process.env.BASE_URL}/uploads/questions/${q.imageUrl}` : 
-          null,
-        answers: q.answers.map(a => ({ id: a.id, text: a.text }))
-      })),
-      progress: {
-        answered: attempt.userAnswers.length,
-        total: attempt.totalQuestions
-      }
-    };
+      return {
+          attemptId: attempt.id,
+          topicId,
+          topicName: topic?.name || '',
+          questions: questions || [], // Гарантируем массив
+          progress: {
+              answered: attempt.userAnswers?.length || 0,
+              total: attempt.totalQuestions
+          }
+      };
   }
 
   async submitAnswer(
@@ -239,6 +224,111 @@ class TopicService {
 
     return { success: true, isCorrect: userAnswer.isCorrect };
   }
+
+    async finishAttempt(topicId: number, attemptId: number, userId: number) {
+        const attemptRepo = AppDataSource.getRepository(TestAttempt);
+        const topicProgressRepo = AppDataSource.getRepository(TopicProgress);
+        
+        // Находим попытку
+        const attempt = await attemptRepo.findOne({
+            where: { 
+                id: attemptId,
+                user: { id: userId },
+                topicId
+            },
+            relations: ['userAnswers']
+        });
+
+        if (!attempt) {
+            throw new Error('Попытка тестирования не найдена');
+        }
+
+        // Рассчитываем результаты
+        const correctAnswers = attempt.userAnswers.filter(a => a.isCorrect).length;
+        const totalQuestions = attempt.totalQuestions;
+        const passed = correctAnswers >= Math.ceil(totalQuestions * 0.7); // 70% для успешного прохождения
+
+        // Обновляем попытку
+        attempt.status = passed ? 'passed' : 'failed';
+        attempt.correctAnswers = correctAnswers;
+        attempt.incorrectAnswers = totalQuestions - correctAnswers;
+        attempt.completedAt = new Date();
+        
+        await attemptRepo.save(attempt);
+
+        // Обновляем прогресс по теме
+        await topicProgressRepo.update(
+            { user: { id: userId }, topicId },
+            { 
+                status: passed ? 'passed' : 'failed',
+                lastAttempt: attempt, // Используем само отношение, а не ID
+                correctAnswers: () => `correct_answers + ${correctAnswers}`,
+                questionsAnswered: () => `questions_answered + ${totalQuestions}`
+            }
+        );
+
+        return {
+            status: attempt.status,
+            correctAnswers,
+            incorrectAnswers: attempt.incorrectAnswers,
+            timeSpent: attempt.timeSpentSeconds,
+            passed
+        };
+    }
+
+    async getAttemptResults(topicId: number, attemptId: number, userId: number) {
+        const attemptRepo = AppDataSource.getRepository(TestAttempt);
+        const answerRepo = AppDataSource.getRepository(Answer);
+        
+        // Находим попытку с ответами пользователя
+        const attempt = await attemptRepo.findOne({
+            where: { 
+                id: attemptId,
+                user: { id: userId },
+                topicId
+            },
+            relations: ['userAnswers', 'userAnswers.question', 'userAnswers.answer']
+        });
+
+        if (!attempt) {
+            throw new Error('Попытка тестирования не найдена');
+        }
+
+        // Получаем правильные ответы для вопросов
+        const results = await Promise.all(
+            attempt.userAnswers.map(async userAnswer => {
+                const correctAnswer = await answerRepo.findOne({
+                    where: {
+                        question: { id: userAnswer.question.id },
+                        isCorrect: true
+                    }
+                });
+
+                return {
+                    questionId: userAnswer.question.id,
+                    questionText: userAnswer.question.text,
+                    userAnswerText: userAnswer.answer.text,
+                    isCorrect: userAnswer.isCorrect,
+                    correctAnswerText: correctAnswer?.text || 'Не найден',
+                    imageUrl: userAnswer.question.imageUrl
+                };
+            })
+        );
+
+        // Получаем информацию о теме
+        const topic = await AppDataSource.getRepository(Topic).findOneBy({ id: topicId });
+
+        return {
+            topicId,
+            topicName: topic?.name || 'Неизвестная тема',
+            status: attempt.status,
+            correctAnswers: attempt.correctAnswers,
+            incorrectAnswers: attempt.incorrectAnswers,
+            timeSpent: attempt.timeSpentSeconds,
+            results,
+            passed: attempt.status === 'passed'
+        };
+    }
 }
 
 export default new TopicService();
