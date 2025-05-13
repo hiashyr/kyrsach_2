@@ -74,6 +74,14 @@ interface UserStats {
 
 class ExamService {
   private testAttemptsRepository = AppDataSource.getRepository(TestAttempt);
+  private shuffleArray<T>(array: T[]): T[] {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
   async startExam(userId: number): Promise<ExamStartResult> {
       const queryRunner = AppDataSource.createQueryRunner();
       await queryRunner.connect();
@@ -91,29 +99,23 @@ class ExamService {
               throw new Error('Пользователь не найден');
           }
 
-          // 2. Получаем случайные вопросы в два этапа
-          // Сначала получаем ID случайных вопросов
-          const randomQuestionIds = await queryRunner.manager
-              .createQueryBuilder(Question, 'question')
-              .select('question.id')
-              .orderBy('RANDOM()')
-              .take(20)
-              .getRawMany(); // Используем getRawMany для простых ID
-
-          if (randomQuestionIds.length < 20) {
-              throw new Error(`Недостаточно вопросов. Получено: ${randomQuestionIds.length}, требуется: 20`);
-          }
-
-          // Затем получаем полные данные вопросов с ответами
-          const questions = await queryRunner.manager
+          // 2. Получаем ВСЕ вопросы с ответами сразу
+          const allQuestions = await queryRunner.manager
               .createQueryBuilder(Question, 'question')
               .leftJoinAndSelect('question.answers', 'answers')
-              .where('question.id IN (:...ids)', { 
-                  ids: randomQuestionIds.map(q => q.question_id) 
-              })
               .getMany();
 
-          // 3. Создаем попытку тестирования
+          if (allQuestions.length < 20) {
+              throw new Error(`Недостаточно вопросов в базе. Доступно: ${allQuestions.length}, требуется: 20`);
+          }
+
+          // 3. Перемешиваем вопросы и ответы
+          const shuffledQuestions = this.shuffleArray(allQuestions).slice(0, 20);
+          shuffledQuestions.forEach(question => {
+              question.answers = this.shuffleArray(question.answers);
+          });
+
+          // 4. Создаем попытку тестирования
           const attempt = new TestAttempt();
           attempt.user = user;
           attempt.testType = 'exam';
@@ -124,11 +126,11 @@ class ExamService {
           
           const savedAttempt = await queryRunner.manager.save(attempt);
 
-          // 4. Форматируем вопросы
+          // 5. Форматируем вопросы
           const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
-          const defaultImage = `${baseUrl}/images/default-question.jpg`;
+          const defaultImage = `${baseUrl}/uploads/questions/default-question.jpg`;
 
-          const formattedQuestions = questions.map(question => ({
+          const formattedQuestions = shuffledQuestions.map(question => ({
               id: question.id,
               text: question.text,
               imageUrl: question.imageUrl 
